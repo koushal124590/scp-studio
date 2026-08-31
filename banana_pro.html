@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nano Banana Pro Converter</title>
+    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .top-menu { border-bottom: 2px solid #f8e71c; }
+        .panel-header { color: #f8e71c; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Modern Top Header -->
+        <header class="top-menu">
+            <div class="brand-pill">
+                <span class="brand-bolt" style="background: linear-gradient(135deg, #f8e71c, #f59e0b);"><i class="fa-solid fa-wand-magic-sparkles" style="color:#000;"></i></span>
+                <span class="brand-title">BANANA PRO</span>
+                <span class="brand-badge" style="background: rgba(248, 231, 28, 0.15); color: #f8e71c;">AI STUDIO</span>
+            </div>
+            <div class="spacer"></div>
+            <!-- Aceternity-Style Floating Dock -->
+            <div class="floating-dock-wrapper">
+                <nav class="floating-dock">
+                    <a href="login.html" class="dock-item" title="Home / Landing">
+                        <i class="fa-solid fa-house"></i>
+                        <span class="dock-tooltip">Home</span>
+                    </a>
+                    <div class="dock-item" id="dock-tool-select" title="Selection Tool (V)">
+                        <i class="fa-solid fa-arrow-pointer"></i>
+                        <span class="dock-tooltip">Select (V)</span>
+                    </div>
+                    <div class="dock-item" id="dock-tool-pen" title="Pen Tool (P)">
+                        <i class="fa-solid fa-pen-nib"></i>
+                        <span class="dock-tooltip">Pen (P)</span>
+                    </div>
+                    <div class="dock-item" id="dock-action-trace" style="color: #ff9a00;" title="Vectorize / Trace">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span class="dock-tooltip">Vectorize</span>
+                    </div>
+                    <a href="index.html" class="dock-item" style="color: #38bdf8;" title="Standard Editor">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="dock-tooltip">Standard Editor</span>
+                    </a>
+                    <div class="dock-item" id="btn-open-dialog" title="AI Generator">
+                        <i class="fa-solid fa-robot"></i>
+                        <span class="dock-tooltip">AI Prompt</span>
+                    </div>
+                    <div class="dock-item" id="dock-action-copy" title="Copy SVG Code">
+                        <i class="fa-solid fa-code"></i>
+                        <span class="dock-tooltip">Copy SVG</span>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Aceternity-Style ImagesBadge (Interactive Template Stack) -->
+            <div class="images-badge" id="images-badge-templates" title="Click to load Marketing Template">
+                <div class="badge-strip">
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=alpha&backgroundColor=1e293b" alt="Template 1"></div>
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=beta&backgroundColor=0f172a" alt="Template 2"></div>
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=gamma&backgroundColor=172554" alt="Template 3"></div>
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=delta&backgroundColor=1c1917" alt="Template 4"></div>
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=epsilon&backgroundColor=14532d" alt="Template 5"></div>
+                </div>
+                <span class="badge-label">Marketing Templates</span>
+            </div>
+
+            <a href="index.html" class="menu-item" style="color: #ccc; text-decoration: none; margin-left: 8px;"><i class="fa-solid fa-arrow-left"></i> Standard</a>
+            <div id="auth-section" class="menu-item" style="margin-left: 8px;">
+                <!-- Dynamically populated by JS -->
+            </div>
+        </header>
+
+        <!-- Top Control Bar (Illustrator Style) -->
+        <div class="top-control-bar">
+            <div class="control-item"><strong>No Selection</strong></div>
+            <div class="separator"></div>
+            <div class="control-item">Opacity: <input type="number" id="top-opacity" value="100" min="0" max="100" style="width: 50px;">%</div>
+            <div class="separator"></div>
+            <div class="control-item"><i class="fa-solid fa-align-left"></i></div>
+            <div class="control-item"><i class="fa-solid fa-align-center"></i></div>
+            <div class="control-item"><i class="fa-solid fa-align-right"></i></div>
+            <div class="separator"></div>
+            <div class="control-item">X: <input type="number" id="top-x" value="0" style="width: 60px;"></div>
+            <div class="control-item">Y: <input type="number" id="top-y" value="0" style="width: 60px;"></div>
+            <div class="control-item">W: <input type="number" id="top-w" value="0" style="width: 60px;"></div>
+            <div class="control-item">H: <input type="number" id="top-h" value="0" style="width: 60px;"></div>
+        </div>
+
+        <div class="main-workspace">
+            <!-- Left Toolbar -->
+            <aside class="toolbar">
+                <div class="tool active" data-tool="select" title="Selection Tool (V)"><i class="fa-solid fa-arrow-pointer"></i></div>
+                <div class="tool" data-tool="move" title="Move Tool (M)"><i class="fa-solid fa-up-down-left-right"></i></div>
+                <div class="tool" data-tool="hand" title="Hand Tool (H) — Pan Canvas"><i class="fa-solid fa-hand"></i></div>
+                <div class="tool" data-tool="zoom" title="Zoom Tool (Z)"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <div class="tool" data-tool="eraser" title="Eraser Tool (E) — Delete Selected"><i class="fa-solid fa-eraser"></i></div>
+                <div class="tool" data-tool="eyedropper" title="Eyedropper (I) — Pick Color"><i class="fa-solid fa-eye-dropper"></i></div>
+                <div class="tool" data-tool="pen" title="Pen Tool (P) — Draw Path"><i class="fa-solid fa-pen-nib"></i></div>
+                <div class="tool" data-tool="rect" title="Rectangle Tool (R)"><i class="fa-solid fa-vector-square"></i></div>
+                <div class="tool" data-tool="text" title="Text Tool (T)"><i class="fa-solid fa-font"></i></div>
+            </aside>
+
+            <!-- Center Canvas Area -->
+            <main class="canvas-area" id="drop-zone" style="position: relative; display: flex; flex-direction: column;">
+                
+                <!-- Illustrator Top Panel Clone -->
+                <div class="illustrator-panel">
+                    <div class="illustrator-tabs">
+                        <div class="tab active"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate vectors</div>
+                        <div class="tab"><i class="fa-regular fa-image"></i> Create inspiration images <span style="color:#1473e6; font-size:10px;">●</span></div>
+                        <div class="tab"><i class="fa-solid fa-table-cells-large"></i> Ideate with Boards <span style="color:#1473e6; font-size:10px;">●</span></div>
+                    </div>
+                    
+                    <div class="gen-box">
+                        <div class="reference-box">
+                            <button><i class="fa-solid fa-image"></i> Add reference</button>
+                        </div>
+                        <div class="prompt-input-area">
+                            <input type="text" id="ai-prompt-input-top" placeholder="A futuristic nano banana, high quality vector art, clean lines">
+                            <button class="btn-generate" id="btn-generate-top"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate</button>
+                        </div>
+                    </div>
+                    
+                    <div class="try-samples">
+                        <span style="color: #ccc; font-weight: bold;">Try a sample:</span>
+                        <div class="sample-chip">
+                            <div style="width:24px; height:24px; background:linear-gradient(45deg, purple, blue); border-radius:3px;"></div>
+                            Reference a visual style
+                        </div>
+                        <div class="sample-chip">
+                            <div style="width:24px; height:24px; background:#fff; border-radius:3px; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-pen" style="color:#000;"></i></div>
+                            Make a logo from a sketch
+                        </div>
+                        <div class="sample-chip">
+                            <div style="width:24px; height:24px; background:#fff; border-radius:3px; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-masks-theater" style="color:#000;"></i></div>
+                            Create comics-style vectors
+                        </div>
+                    </div>
+                </div>
+
+                <div class="canvas-tabs" style="margin: 0 20px;">
+                    <div class="tab active" style="border-top: 2px solid #f8e71c;">Generated_Image @ <span id="zoom-display">100</span>% (RGB/Preview) <i class="fa-solid fa-xmark"></i></div>
+                </div>
+                
+                <div class="artboard-container" style="flex: 1; position: relative;">
+                    <div class="artboard" id="artboard">
+                        <div id="placeholder-text">
+                            <i class="fa-solid fa-image" style="color: #f8e71c;"></i>
+                            <p>Drop High-Res Nano Banana Image Here</p>
+                        </div>
+                        <img id="source-image" style="display:none;" />
+                        <div id="svg-output" style="display:none;"></div>
+                        <div id="interactive-card-output" style="display:none;"></div>
+                        <!-- Hidden contenteditable for direct text typing -->
+                        <div id="text-edit-overlay" contenteditable="true" style="display:none; position:absolute; font-family:sans-serif; font-size:24px; color:#000; outline:none; white-space:nowrap; z-index:500;"></div>
+                    </div>
+                    
+                    <!-- Illustrator Floating Taskbar Clone -->
+                    <div class="floating-taskbar">
+                        <button class="taskbar-btn" id="btn-open-dialog"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Vectors</button>
+                        <div style="width: 1px; height: 16px; background-color: #555; margin: 0 4px;"></div>
+                        <button class="taskbar-btn"><i class="fa-solid fa-pen"></i> Draw (Pencil)</button>
+                        <button class="taskbar-btn"><i class="fa-regular fa-image"></i></button>
+                        <button class="taskbar-btn"><i class="fa-solid fa-ellipsis"></i></button>
+                    </div>
+                    
+                    <!-- Illustrator Generative Dialog Clone -->
+                    <div class="ai-dialog-wrapper" id="ai-dialog">
+                        <div class="ai-dialog-header">Suggested Models</div>
+                        <div class="ai-dialog-content">
+                            <div class="model-select-wrapper">
+                                <i class="fa-brands fa-google" style="color:#fff; font-size:14px;"></i>
+                                <select>
+                                    <option>Gemini 3.0 (Nano Banana Pro)</option>
+                                    <option>Gemini 1.5 Pro</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div class="subtext">Generate by changing model from dropdown</div>
+                            <textarea id="ai-prompt-input-dialog" placeholder="Describe the vector you'd like to generate" style="background: #222; border: 1px solid #444; border-radius: 4px; padding: 8px; color: #fff; resize: none; height: 60px; font-family: inherit; font-size: 13px;"></textarea>
+                        </div>
+                        <div class="ai-dialog-footer">
+                            <div class="credits-label"><i class="fa-solid fa-star"></i> Uses 10 credits</div>
+                            <div class="dialog-actions">
+                                <button class="btn-ghost" id="btn-cancel-dialog">Cancel</button>
+                                <button class="btn-ai-blue" id="btn-generate-dialog"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Context Action Bar (appears when selecting a layer) -->
+                <div id="context-bar" class="context-bar" style="display: none;">
+                    <span class="context-label"><i class="fa-solid fa-layer-group"></i> Layer Selected</span>
+                    <button class="ctx-btn" id="ctx-duplicate"><i class="fa-solid fa-clone"></i> Duplicate</button>
+                    <button class="ctx-btn" id="ctx-delete"><i class="fa-solid fa-trash"></i> Remove</button>
+                    <button class="ctx-btn" id="ctx-front"><i class="fa-solid fa-arrow-up"></i> Bring Front</button>
+                    <button class="ctx-btn" id="ctx-back"><i class="fa-solid fa-arrow-down"></i> Send Back</button>
+                    <button class="ctx-btn" id="ctx-color"><i class="fa-solid fa-palette"></i> Fill Color</button>
+                    <input type="color" id="ctx-color-picker" style="width:0;height:0;opacity:0;position:absolute;">
+                    <button class="ctx-btn ctx-extract" id="ctx-extract"><i class="fa-solid fa-object-ungroup"></i> Extract SVG</button>
+                </div>
+            </main>
+
+            <!-- Right Panels Dock (Multi-column Illustrator Style) -->
+            <aside class="panels-dock">
+                <!-- Column 1: Layers -->
+                <div class="panel-col layer-col">
+                    <div class="panel-header"><i class="fa-solid fa-layer-group"></i> Layers</div>
+                    <div class="panel-content layers-panel" id="layers-panel">
+                        <div class="empty-state">Trace an image to see layers</div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Color / Stroke -->
+                <div class="panel-col color-col">
+                    <div class="panel-header">Color</div>
+                    <div class="panel-content color-panel">
+                        <div class="color-spectrum" id="color-spectrum"></div>
+                        <div class="panel-header" style="background:transparent; padding: 5px 0;">Swatches</div>
+                        <div class="swatches-grid" id="swatches-grid"></div>
+                    </div>
+                    <div class="panel-header" style="margin-top: 2px;">Stroke</div>
+                    <div class="panel-content stroke-panel">
+                        <div class="control-group">
+                            <label>Weight:</label>
+                            <input type="number" id="stroke-weight" value="1" min="0" max="100">
+                            <span>pt</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 3: Properties / Trace -->
+                <div class="panel-col prop-col">
+                    <div class="illustrator-tabs">
+                        <div class="tab active" data-target="tab-properties">Properties</div>
+                        <div class="tab" data-target="tab-library">Libraries</div>
+                        <div class="tab" data-target="tab-trace">Pro Trace</div>
+                        <!-- Toggle Buttons for Hidden Panels -->
+                        <div class="panel-toggles" style="margin-left: auto; display: flex; gap: 8px; color: #888;">
+                            <i class="fa-solid fa-layer-group" id="toggle-layers" title="Toggle Layers" style="cursor: pointer;"></i>
+                            <i class="fa-solid fa-palette" id="toggle-colors" title="Toggle Colors" style="cursor: pointer;"></i>
+                        </div>
+                    </div>
+
+                    <div id="tab-properties" class="panel-tab-content active">
+                        <div class="panel-section">
+                            <div class="section-title">Transform <i class="fa-solid fa-ellipsis" style="float: right; cursor: pointer;"></i></div>
+                            <div class="transform-advanced">
+                                <div class="proxy-grid">
+                                    <div class="proxy-pt"></div><div class="proxy-pt"></div><div class="proxy-pt"></div>
+                                    <div class="proxy-pt"></div><div class="proxy-pt active"></div><div class="proxy-pt"></div>
+                                    <div class="proxy-pt"></div><div class="proxy-pt"></div><div class="proxy-pt"></div>
+                                </div>
+                                <div class="transform-inputs">
+                                    <div><label>X:</label><input type="number" id="prop-x" value="0"></div>
+                                    <div><label>Y:</label><input type="number" id="prop-y" value="0"></div>
+                                    <div><label>W:</label><input type="number" id="prop-w" value="0"></div>
+                                    <div><label>H:</label><input type="number" id="prop-h" value="0"></div>
+                                    <div><label>△:</label><input type="text" id="prop-rot" value="0°"></div>
+                                    <div class="flip-icons">
+                                        <i class="fa-solid fa-link" title="Constrain Proportions"></i>
+                                        <i class="fa-regular fa-square" style="position: relative;" title="Scale Corners"><span style="position:absolute; top:-2px; right:-2px; font-size:6px; background:#fff; color:#000;">◤</span></i>
+                                        <i class="fa-solid fa-border-all" title="Scale Strokes & Effects"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <div class="section-title">Appearance <i class="fa-solid fa-ellipsis" style="float: right; cursor: pointer;"></i></div>
+                            <div class="appearance-advanced">
+                                <div class="app-row">
+                                    <div class="color-box" id="prop-fill-box" style="background: #fff;"></div> <label>Fill</label>
+                                </div>
+                                <div class="app-row">
+                                    <div class="color-box stroke-box" id="prop-stroke-box">
+                                        <div style="width:100%;height:100%;background:linear-gradient(to top right, transparent calc(50% - 1px), #ff0000, transparent calc(50% + 1px));"></div>
+                                    </div> 
+                                    <label>Stroke</label>
+                                    <select style="margin-left:auto; width:40px;"><option>1</option></select>
+                                    <select style="width:40px;"><option>—</option></select>
+                                </div>
+                                <div class="app-row">
+                                    <i class="fa-solid fa-chess-board" style="color:#666; font-size:14px; margin-right:4px;"></i> <label>Opacity</label>
+                                    <input type="number" id="prop-opacity" value="100" min="0" max="100" style="margin-left:auto; width:45px;">%
+                                    <i class="fa-solid fa-chevron-right" style="margin-left:4px; font-size:10px;"></i>
+                                </div>
+                                <div class="app-row" style="margin-top:4px;">
+                                    <i class="fa-solid fa-fx" style="font-family: serif; font-style: italic; color:#aaa;">fx</i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-section">
+                            <div class="section-title">Align <i class="fa-solid fa-ellipsis" style="float: right; cursor: pointer;"></i></div>
+                            <div class="align-icons">
+                                <i class="fa-solid fa-align-left" title="Horizontal Align Left"></i>
+                                <i class="fa-solid fa-align-center" title="Horizontal Align Center"></i>
+                                <i class="fa-solid fa-align-right" title="Horizontal Align Right"></i>
+                                <div class="sep"></div>
+                                <i class="fa-solid fa-align-left" style="transform: rotate(90deg);" title="Vertical Align Top"></i>
+                                <i class="fa-solid fa-align-center" style="transform: rotate(90deg);" title="Vertical Align Center"></i>
+                                <i class="fa-solid fa-align-right" style="transform: rotate(90deg);" title="Vertical Align Bottom"></i>
+                            </div>
+                        </div>
+
+                        <div class="panel-section">
+                            <div class="section-title">Pathfinder <i class="fa-solid fa-ellipsis" style="float: right; cursor: pointer;"></i></div>
+                            <div class="pathfinder-advanced">
+                                <div class="pathfinder-icons">
+                                    <button class="btn-ghost" title="Unite"><i class="fa-solid fa-object-group"></i></button>
+                                    <button class="btn-ghost" title="Minus Front"><i class="fa-solid fa-object-subtract"></i></button>
+                                    <button class="btn-ghost" title="Intersect"><i class="fa-solid fa-object-exclude"></i></button>
+                                    <button class="btn-ghost" title="Exclude"><i class="fa-regular fa-object-ungroup"></i></button>
+                                </div>
+                                <button class="btn-secondary" style="font-size:10px; padding:2px 8px; opacity:0.5;">Expand</button>
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <div class="section-title">Quick Actions</div>
+                            <div class="quick-actions-advanced">
+                                <div class="grid-2">
+                                    <button class="btn-secondary" id="btn-ungroup">Ungroup</button>
+                                    <button class="btn-secondary">Isolate Group</button>
+                                </div>
+                                <div class="grid-2">
+                                    <button class="btn-secondary" id="btn-save-symbol">Save as Symbol</button>
+                                    <button class="btn-secondary" id="btn-recolor">Recolor</button>
+                                </div>
+                                <button class="btn-secondary full-width">Arrange</button>
+                                <button class="btn-secondary full-width" style="text-align:left; display:flex; justify-content:space-between;">Start Global Edit <i class="fa-solid fa-chevron-down"></i></button>
+                                <button class="btn-secondary full-width">Gen Shape Fill</button>
+                                <button class="btn-secondary full-width" style="color:#aaa;"><span style="color:#1473e6; font-size:12px;">●</span> Generative Expand</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-library" class="panel-tab-content" style="display: none;">
+                        <div class="panel-section">
+                            <div class="section-title">My Symbols</div>
+                            <div class="library-grid" id="library-grid">
+                                <div class="empty-state" style="grid-column: 1 / -1;">No symbols saved yet. Select a layer and click "Save as Symbol".</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-trace" class="panel-tab-content" style="display: none;">
+                        <div class="control-group">
+                            <label>AI Preset:</label>
+                            <select id="preset-select">
+                                <option value="photo">Banana High Fidelity</option>
+                                <option value="sketch">Banana Flat Vector</option>
+                                <option value="bw_sharp">Banana Line Art</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>View:</label>
+                            <select id="view-mode">
+                                <option value="tracing">Vector Output</option>
+                                <option value="source">Original Image</option>
+                            </select>
+                        </div>
+                        <hr style="border-color:#444; margin:10px 0;">
+                        <div class="control-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <label style="color: #f8e71c;"><i class="fa-solid fa-robot"></i> AI Conversion Instructions:</label>
+                            <textarea id="ai-trace-prompt" placeholder="Describe how the AI should convert this image into vector paths..." style="width: 100%; height: 80px; background: #222; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 4px; resize: none; font-size: 13px;"></textarea>
+                        </div>
+                        <button id="btn-upscale" class="btn-secondary" style="margin-top: 10px; width: 100%;" disabled><i class="fa-solid fa-expand"></i> Enhance & De-blur 1000%</button>
+                        <hr style="border-color:#444; margin:10px 0;">
+                        <div class="actions">
+                            <button id="btn-trace" class="btn-primary" style="background-color: #f8e71c; color: #000; font-weight:bold;" disabled><i class="fa-solid fa-wand-magic-sparkles"></i> Vectorize Image</button>
+                            <button id="btn-expand" class="btn-secondary" disabled><i class="fa-solid fa-download"></i> Download SVG</button>
+                            <button id="btn-download-gif" class="btn-secondary" style="margin-top: 5px;" disabled><i class="fa-solid fa-file-image"></i> Download GIF</button>
+                            <button id="btn-extract-layer" class="btn-secondary" style="margin-top: 5px; display: none;">Extract Layer</button>
+                            <button id="btn-clear" class="btn-secondary" style="margin-top: 10px; background-color: #8b0000; color: #fff;"><i class="fa-solid fa-trash"></i> Clear Board</button>
+                        </div>
+                        <div class="panel-section" style="margin-top: 15px;">
+                            <div class="section-title">SVG Code Export</div>
+                            <textarea id="svg-code-output" readonly placeholder="High quality SVG code will appear here..."></textarea>
+                            <button id="btn-copy-code" class="btn-secondary" style="margin-top: 5px;" disabled><i class="fa-solid fa-copy"></i> Copy Code to Clipboard</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>      </div>
+        
+        <footer class="status-bar">
+            <div>100%</div>
+            <div>vtracer engine</div>
+            <div id="status-text">Ready for Banana Pro image</div>
+        </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.17/paper-core.min.js"></script>
+    <script src="app.js?v=3"></script>
+    <script>
+        window.addEventListener('load', () => {
+            presetSelect.value = 'photo';
+            presetSelect.dispatchEvent(new Event('change'));
+        });
+    </script>
+</body>
+</html>

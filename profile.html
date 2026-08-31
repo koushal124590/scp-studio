@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile & Account Settings - SCP Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-obsidian: #000000;
+            --card-glass: rgba(10, 12, 18, 0.82);
+            --chroma-cyan: #3fe9ff;
+            --chroma-purple: #a855f7;
+            --chroma-pink: #ec4899;
+            --chroma-amber: #f59e0b;
+            --chroma-emerald: #10b981;
+            
+            --grad-hologram: linear-gradient(135deg, #3fe9ff 0%, #a855f7 35%, #ec4899 70%, #f59e0b 100%);
+            --grad-cyber: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+            --grad-sunset: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%);
+            --grad-aurora: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Mesh Drift WebGL Background */
+        #mesh-drift-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .gradient-vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 20%, rgba(0,0,0,0.4) 0%, rgba(0, 0, 0, 0.88) 85%),
+                        linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 40%, rgba(0,0,0,0.95) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Page Layout & Spacing */
+        .profile-page-container {
+            position: relative;
+            z-index: 10;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 28px 120px 28px;
+        }
+
+        /* Top Header Navigation */
+        .profile-header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 48px;
+        }
+
+        @keyframes scpSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .scp-logo-spin {
+            animation: scpSpin 10s linear infinite;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #000000;
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(63, 233, 255, 0.4);
+            padding: 7px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #e4e4e7;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .header-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-btn.btn-upgrade {
+            background: var(--grad-hologram);
+            color: #000000;
+            border: none;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .header-btn.btn-upgrade:hover {
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5);
+        }
+
+        .header-btn.logout-btn {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .header-btn.logout-btn:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Profile Layout Grid */
+        .profile-grid-layout {
+            display: grid;
+            grid-template-columns: 310px 1fr;
+            gap: 36px;
+        }
+
+        @media (max-width: 960px) {
+            .profile-grid-layout { grid-template-columns: 1fr; }
+        }
+
+        /* Sidebar Navigation & User Info */
+        .profile-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .profile-user-summary-card {
+            background: var(--card-glass);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 20px;
+            padding: 28px 22px;
+            text-align: center;
+            margin-bottom: 20px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .avatar-circle-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--grad-hologram);
+            color: #000000;
+            font-weight: 800;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.35);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .profile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            border-radius: 14px;
+            color: #a1a1aa;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .profile-nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(3px);
+        }
+
+        .profile-nav-link.active {
+            color: #ffffff;
+            background: rgba(168, 85, 247, 0.16);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .profile-nav-link.active i {
+            color: #c084fc;
+        }
+
+        .profile-nav-link.sidebar-logout {
+            margin-top: 20px;
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .profile-nav-link.sidebar-logout:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Main Content Section Cards */
+        .profile-main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .content-card {
+            background: var(--card-glass);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 34px 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* Top Corner Accents */
+        .card-corner-cross {
+            position: absolute;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
+        }
+        .card-corner-cross.tl { top: 12px; left: 14px; }
+        .card-corner-cross.tr { top: 12px; right: 14px; }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #a1a1aa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .profile-input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .profile-input:focus {
+            outline: none;
+            border-color: #3fe9ff;
+            box-shadow: 0 0 20px rgba(63, 233, 255, 0.25);
+        }
+
+        .primary-save-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: var(--grad-hologram);
+            color: #000000;
+            font-weight: 800;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .primary-save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5);
+        }
+
+        /* Quotas & Progress Bars */
+        .quota-item {
+            margin-bottom: 22px;
+        }
+
+        .quota-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .progress-bar-track {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            background: var(--grad-hologram);
+        }
+
+        /* API Key Rows */
+        .api-key-box {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        .copy-key-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .copy-key-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 36px;
+            right: 36px;
+            background: var(--grad-hologram);
+            color: #000000;
+            font-weight: 800;
+            padding: 14px 28px;
+            border-radius: 14px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+            display: none;
+            z-index: 200;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Mesh Drift WebGL Shader Background -->
+    <canvas id="mesh-drift-canvas"></canvas>
+    <div class="gradient-vignette"></div>
+
+    <div class="profile-page-container">
+        <!-- Top Header Navigation -->
+        <header class="profile-header-nav">
+            <a href="index.html" class="brand-link" title="SCP Studio">
+                <div class="brand-icon-box"><img src="logo.svg" class="scp-logo-spin" style="width:100%;height:100%;filter:invert(1);" alt="SCP"></div>
+                <span>SCP STUDIO</span>
+            </a>
+            <div class="header-actions">
+                <a href="index.html" class="header-btn"><i class="fa-solid fa-arrow-left"></i> Workspace</a>
+                <a href="subscription.html" class="header-btn btn-upgrade"><i class="fa-solid fa-crown"></i> Upgrade</a>
+                <button class="header-btn logout-btn" onclick="handleLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
+            </div>
+        </header>
+
+        <div class="profile-grid-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="profile-sidebar">
+                <div class="profile-user-summary-card">
+                    <div class="avatar-circle-large" id="avatar-display">PD</div>
+                    <h3 id="display-name" style="font-size: 19px; font-weight: 800; margin-bottom: 4px;">Pro Designer</h3>
+                    <p id="display-email" style="font-size: 13px; color: #a1a1aa; margin-bottom: 16px;">designer@studio.com</p>
+                    <span class="status-badge-item" id="display-plan-pill" style="background: rgba(168, 85, 247, 0.18); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); font-size: 12px; padding: 6px 14px; border-radius: 9999px; font-weight: 700;">
+                        <i class="fa-solid fa-crown"></i> Business Pro
+                    </span>
+                </div>
+
+                <a class="profile-nav-link active" onclick="switchPane('account', this)"><i class="fa-solid fa-user"></i> Account Settings</a>
+                <a class="profile-nav-link" onclick="switchPane('quotas', this)"><i class="fa-solid fa-gauge-high"></i> Credits & Quotas</a>
+                <a class="profile-nav-link" onclick="switchPane('api', this)"><i class="fa-solid fa-key"></i> API Keys & Tokens</a>
+                <a class="profile-nav-link" onclick="switchPane('security', this)"><i class="fa-solid fa-shield-halved"></i> Security & 2FA</a>
+                <a class="profile-nav-link" onclick="switchPane('team', this)"><i class="fa-solid fa-people-group"></i> Team & Workspaces</a>
+                <a class="profile-nav-link" onclick="switchPane('invoices', this)"><i class="fa-solid fa-receipt"></i> Invoices & Billing</a>
+                
+                <a class="profile-nav-link sidebar-logout" onclick="handleLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out Account</a>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="profile-main-content">
+                <!-- Pane 1: Account Settings -->
+                <section id="pane-account" class="content-card">
+                    <span class="card-corner-cross tl">+</span>
+                    <span class="card-corner-cross tr">+</span>
+                    <div class="card-header-row">
+                        <div class="card-title"><i class="fa-solid fa-user-pen" style="color: #3fe9ff;"></i> Personal Profile</div>
+                        <button class="primary-save-btn" onclick="saveProfile()"><i class="fa-solid fa-check"></i> Save Changes</button>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="profile-input" id="input-name" value="Pro Designer">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" class="profile-input" id="input-email" value="designer@studio.com">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Company / Studio</label>
+                            <input type="text" class="profile-input" id="input-org" value="Creative Vector Labs">
+                        </div>
+                        <div class="form-group">
+                            <label>Design Role</label>
+                            <input type="text" class="profile-input" id="input-role" value="Lead Vector Artist">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pane 2: Credits & Quotas -->
+                <section id="pane-quotas" class="content-card">
+                    <span class="card-corner-cross tl">+</span>
+                    <span class="card-corner-cross tr">+</span>
+                    <div class="card-header-row">
+                        <div class="card-title"><i class="fa-solid fa-bolt" style="color: #a855f7;"></i> Compute & Quota Telemetry</div>
+                        <a href="subscription.html" class="primary-save-btn" style="text-decoration:none;"><i class="fa-solid fa-plus"></i> Buy Credits</a>
+                    </div>
+
+                    <div class="quota-item">
+                        <div class="quota-meta">
+                            <span>High-Res Vector Traces</span>
+                            <span style="color:#3fe9ff;">420 / 5,000 used (8.4%)</span>
+                        </div>
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" style="width: 8.4%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="quota-item">
+                        <div class="quota-meta">
+                            <span>1000% Neural Upscaling Runs</span>
+                            <span style="color:#a855f7;">18 / 100 used (18%)</span>
+                        </div>
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" style="width: 18%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="quota-item">
+                        <div class="quota-meta">
+                            <span>Aceternity 3D Perspective Renders</span>
+                            <span style="color:#ec4899;">Unlimited Access</span>
+                        </div>
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pane 3: API Keys & Tokens -->
+                <section id="pane-api" class="content-card">
+                    <span class="card-corner-cross tl">+</span>
+                    <span class="card-corner-cross tr">+</span>
+                    <div class="card-header-row">
+                        <div class="card-title"><i class="fa-solid fa-key" style="color: #f59e0b;"></i> REST & GraphQL API Keys</div>
+                        <button class="primary-save-btn" onclick="generateApiKey()"><i class="fa-solid fa-plus"></i> Create New Key</button>
+                    </div>
+
+                    <p style="font-size: 14px; color: #a1a1aa; margin-bottom: 20px; line-height: 1.6;">
+                        Authenticate requests to our sub-50ms vector engine directly from your Python or Node.js pipeline.
+                    </p>
+
+                    <div id="api-keys-list">
+                        <div class="api-key-box">
+                            <div>
+                                <span style="color:#3fe9ff; font-weight:700;">sk_live_vec_98fa7261c0e29b19</span>
+                                <div style="font-size:12px; color:#71717a; font-family:'Plus Jakarta Sans', sans-serif;">Created Today • Production Key</div>
+                            </div>
+                            <button class="copy-key-btn" onclick="copyText('sk_live_vec_98fa7261c0e29b19')"><i class="fa-regular fa-copy"></i> Copy</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pane 4: Invoices & Receipts -->
+                <section id="pane-invoices" class="content-card">
+                    <span class="card-corner-cross tl">+</span>
+                    <span class="card-corner-cross tr">+</span>
+                    <div class="card-header-row">
+                        <div class="card-title"><i class="fa-solid fa-receipt" style="color: #ec4899;"></i> Invoices & Billing History</div>
+                    </div>
+
+                    <div class="api-key-box" style="font-family:'Plus Jakarta Sans', sans-serif;">
+                        <div>
+                            <div style="font-weight:700; color:#fff;">Invoice #INV-2026-0830</div>
+                            <div style="font-size:13px; color:#a1a1aa;">August 30, 2026 • Business Pro ($48.00)</div>
+                        </div>
+                        <button class="copy-key-btn" onclick="alert('Downloading PDF Invoice...')"><i class="fa-solid fa-download"></i> PDF</button>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div class="toast-msg" id="toast">Changes saved successfully!</div>
+
+    <!-- Script Logic & Mesh Drift WebGL Engine -->
+    <script>
+        function loadUserData() {
+            let userStr = localStorage.getItem('vectorizerUser');
+            let user = userStr ? JSON.parse(userStr) : {
+                name: 'SCP Designer',
+                email: 'designer@scp.com',
+                plan: 'Business Pro',
+                credits: 500
+            };
+
+            document.getElementById('input-name').value = user.name || 'SCP Designer';
+            document.getElementById('input-email').value = user.email || 'designer@scp.com';
+            document.getElementById('display-name').innerText = user.name || 'SCP Designer';
+            document.getElementById('display-email').innerText = user.email || 'designer@scp.com';
+
+            const initials = (user.name || user.email).substring(0, 2).toUpperCase();
+            document.getElementById('avatar-display').innerText = initials;
+            document.getElementById('display-plan-pill').innerHTML = `<i class="fa-solid fa-crown"></i> ${user.plan || 'Business Pro'}`;
+        }
+
+        async function saveProfile() {
+            let userStr = localStorage.getItem('vectorizerUser');
+            let user = userStr ? JSON.parse(userStr) : {};
+            user.name = document.getElementById('input-name').value;
+            user.email = document.getElementById('input-email').value;
+            localStorage.setItem('vectorizerUser', JSON.stringify(user));
+            loadUserData();
+
+            if (window.FirebaseService && window.FirebaseService.auth && window.FirebaseService.auth.currentUser) {
+                try {
+                    await window.FirebaseService.syncUserToDatabase(window.FirebaseService.auth.currentUser, {
+                        name: user.name,
+                        email: user.email
+                    });
+                } catch(e) { console.warn("Database sync:", e); }
+            }
+
+            showToast('Profile updated and saved to Database!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        function copyText(txt) {
+            navigator.clipboard.writeText(txt);
+            showToast('API Key copied to clipboard!');
+        }
+
+        function generateApiKey() {
+            const hex = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            const key = `sk_live_vec_${hex}`;
+            const container = document.getElementById('api-keys-list');
+            const box = document.createElement('div');
+            box.className = 'api-key-box';
+            box.innerHTML = `
+                <div>
+                    <span style="color:#3fe9ff; font-weight:700;">${key}</span>
+                    <div style="font-size:12px; color:#71717a; font-family:'Plus Jakarta Sans', sans-serif;">Generated Just Now • Active</div>
+                </div>
+                <button class="copy-key-btn" onclick="copyText('${key}')"><i class="fa-regular fa-copy"></i> Copy</button>
+            `;
+            container.prepend(box);
+            showToast('New API key generated!');
+        }
+
+        async function handleLogout() {
+            if (window.FirebaseService) {
+                await window.FirebaseService.logoutUser();
+            } else {
+                localStorage.removeItem('vectorizerUser');
+                sessionStorage.clear();
+            }
+            window.location.href = 'login.html';
+        }
+
+        function switchPane(paneId, btn) {
+            document.querySelectorAll('.profile-nav-link').forEach(l => l.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            if (window.FirebaseService && window.FirebaseService.onAuthStateChanged) {
+                window.FirebaseService.onAuthStateChanged(window.FirebaseService.auth, async (fbUser) => {
+                    if (fbUser) {
+                        const dbUser = await window.FirebaseService.syncUserToDatabase(fbUser);
+                        if (dbUser) loadUserData();
+                    }
+                });
+            }
+        });
+
+        // Mesh Drift Shader (kk.tsx Implementation)
+        (function initMeshDrift() {
+            const canvas = document.getElementById('mesh-drift-canvas');
+            if (!canvas) return;
+            const gl = canvas.getContext('webgl', { alpha: false, antialias: false });
+            if (!gl) return;
+
+            const VERT = `attribute vec2 a_position; void main() { gl_Position = vec4(a_position, 0.0, 1.0); }`;
+            const FRAG = `
+                precision highp float;
+                uniform vec3 u_colors[8];
+                uniform vec4 u_scene;
+                uniform vec4 u_shape;
+                uniform vec4 u_surface;
+                uniform vec4 u_finish;
+                uniform vec4 u_transform;
+                uniform vec4 u_space;
+                uniform vec4 u_cursor;
+
+                #define u_resolution u_scene.xy
+                #define u_time u_scene.z
+                #define u_colorCount u_scene.w
+                #define u_scale u_shape.x
+                #define u_intensity u_shape.y
+                #define u_paramA u_shape.z
+                #define u_warp u_shape.w
+                #define u_detail u_surface.x
+                #define u_contrast u_surface.y
+                #define u_brightness u_surface.z
+                #define u_saturation u_surface.w
+                #define u_hue u_finish.x
+                #define u_vignette u_finish.y
+                #define u_blur u_finish.z
+                #define u_grain u_finish.w
+                #define u_seed u_transform.x
+                #define u_rotate u_transform.y
+                #define u_drift u_transform.z
+                #define u_oklab u_transform.w
+                #define u_offset u_space.xy
+                #define u_mouse u_space.zw
+
+                float hash21(vec2 p) {
+                    p = fract(p * vec2(234.34, 435.345));
+                    p += dot(p, p + 34.23);
+                    return fract(p.x * p.y);
+                }
+
+                float noise(vec2 p) {
+                    vec2 i = floor(p);
+                    vec2 f = fract(p);
+                    vec2 u = f * f * (3.0 - 2.0 * f);
+                    return mix(
+                        mix(hash21(i), hash21(i + vec2(1.0, 0.0)), u.x),
+                        mix(hash21(i + vec2(0.0, 1.0)), hash21(i + vec2(1.0, 1.0)), u.x),
+                        u.y);
+                }
+
+                float fbm(vec2 p) {
+                    float v = 0.0;
+                    float a = 0.5;
+                    for (int i = 0; i < 5; i++) {
+                        v += a * noise(p);
+                        p = p * 2.03 + vec2(17.0, 9.2);
+                        a *= 0.5;
+                    }
+                    return v;
+                }
+
+                vec3 shade(vec2 uv, vec2 p, float t) {
+                    vec3 acc = u_colors[0] * 0.15;
+                    float total = 0.15;
+                    for (int i = 0; i < 8; i++) {
+                        if (float(i) >= u_colorCount) break;
+                        float fi = float(i);
+                        vec2 c = vec2(
+                            sin(t * (0.21 + fi * 0.071) + fi * 2.4 + u_seed),
+                            cos(t * (0.17 + fi * 0.093) + fi * 1.7)) * (0.45 + u_intensity * 0.35);
+                        float w = exp(-dot(p - c, p - c) * 6.0);
+                        acc += u_colors[i] * w;
+                        total += w;
+                    }
+                    return acc / total;
+                }
+
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                    vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+                    p *= u_scale;
+                    p += u_offset;
+                    p += u_drift * vec2(sin(u_time * 0.31), cos(u_time * 0.23));
+                    if (u_warp > 0.0) {
+                        p += u_warp * (vec2(fbm(p * u_detail + u_seed), fbm(p * u_detail + vec2(5.2, 1.3))) - 0.5);
+                    }
+                    vec3 col = shade(uv, p, u_time);
+                    if (abs(u_contrast - 1.0) > 0.0001) col = (col - 0.5) * u_contrast + 0.5;
+                    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+                }
+            `;
+
+            function compile(src, type) {
+                const s = gl.createShader(type);
+                gl.shaderSource(s, src);
+                gl.compileShader(s);
+                return s;
+            }
+
+            const prog = gl.createProgram();
+            gl.attachShader(prog, compile(VERT, gl.VERTEX_SHADER));
+            gl.attachShader(prog, compile(FRAG, gl.FRAGMENT_SHADER));
+            gl.linkProgram(prog);
+            gl.useProgram(prog);
+
+            const buf = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+
+            const loc = gl.getAttribLocation(prog, "a_position");
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+            const uni = {
+                colors: gl.getUniformLocation(prog, "u_colors"),
+                scene: gl.getUniformLocation(prog, "u_scene"),
+                shape: gl.getUniformLocation(prog, "u_shape"),
+                surface: gl.getUniformLocation(prog, "u_surface"),
+                finish: gl.getUniformLocation(prog, "u_finish"),
+                transform: gl.getUniformLocation(prog, "u_transform"),
+                space: gl.getUniformLocation(prog, "u_space"),
+                cursor: gl.getUniformLocation(prog, "u_cursor")
+            };
+
+            const colors = [
+                0.012, 0.110, 0.149,
+                0.106, 0.424, 0.659,
+                0.353, 0.824, 0.957,
+                0.918, 0.976, 1.0,
+                0.918, 0.976, 1.0,
+                0.918, 0.976, 1.0,
+                0.918, 0.976, 1.0,
+                0.918, 0.976, 1.0
+            ];
+            gl.uniform3fv(uni.colors, new Float32Array(colors));
+            gl.uniform4f(uni.shape, 1.300, 0.560, 0.670, 0.192);
+            gl.uniform4f(uni.surface, 2.016, 1.167, 0.000, 1.000);
+            gl.uniform4f(uni.finish, 0.0000, 0.150, 0.0072, 0.098);
+            gl.uniform4f(uni.transform, 5069.0, 2.7227, 0.148, 0.0);
+            gl.uniform4f(uni.cursor, 0, 2.0, 0.730, 0.365);
+
+            function resize() {
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                canvas.width = window.innerWidth * dpr;
+                canvas.height = window.innerHeight * dpr;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const start = performance.now();
+            function render(now) {
+                gl.uniform4f(uni.scene, canvas.width, canvas.height, ((now - start) / 1000) * -1.373, 4);
+                gl.uniform4f(uni.space, 0.090, 0.150, 0, 0);
+                gl.drawArrays(gl.TRIANGLES, 0, 3);
+                requestAnimationFrame(render);
+            }
+            requestAnimationFrame(render);
+        })();
+    </script>
+    <script type="module" src="firebase-service.js"></script>
+</body>
+</html>

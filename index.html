@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCP - Modern Image to Vector Studio</title>
+    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Modern Top Header -->
+        <header class="top-menu">
+            <!-- Brand -->
+            <div class="brand-pill" title="SCP Vector Studio">
+                <span class="brand-bolt" style="background:#000; padding:2px; border:1.5px solid rgba(255,255,255,0.4);"><img src="logo.svg" class="scp-logo-spin" style="width:100%;height:100%;filter:invert(1);" alt="SCP"></span>
+                <span class="brand-title">SCP</span>
+                <span class="brand-badge">STUDIO</span>
+            </div>
+
+            <!-- Adobe / Figma Pro Menubar (30+ Features) -->
+            <nav class="adobe-menubar">
+                <!-- 1. File Menu -->
+                <div class="menu-item dropdown-parent">
+                    File <i class="fa-solid fa-chevron-down menubar-arrow"></i>
+                    <div class="menu-dropdown">
+                        <div class="dropdown-item" id="menu-new"><i class="fa-solid fa-file"></i> New Canvas <span class="menu-shortcut">Ctrl+N</span></div>
+                        <div class="dropdown-item" id="menu-open"><i class="fa-solid fa-upload"></i> Open Image... <span class="menu-shortcut">Ctrl+O</span></div>
+                        <div class="dropdown-item" id="menu-save"><i class="fa-solid fa-floppy-disk"></i> Save Project <span class="menu-shortcut">Ctrl+S</span></div>
+                        <div class="dropdown-separator"></div>
+                        <div class="dropdown-item" id="menu-export-svg"><i class="fa-solid fa-download"></i> Export SVG (.svg) <span class="menu-shortcut">Ctrl+E</span></div>
+                        <div class="dropdown-item" id="menu-export-png"><i class="fa-solid fa-file-image"></i> Export PNG (.png)</div>
+                        <div class="dropdown-item" id="menu-export-gif"><i class="fa-solid fa-film"></i> Export GIF (.gif)</div>
+                        <div class="dropdown-item" id="menu-export-react"><i class="fa-brands fa-react"></i> Export React TSX (.tsx)</div>
+                        <div class="dropdown-separator"></div>
+                        <div class="dropdown-item" id="menu-print"><i class="fa-solid fa-print"></i> Print / PDF <span class="menu-shortcut">Ctrl+P</span></div>
+                        <div class="dropdown-item" id="menu-clear-canvas"><i class="fa-solid fa-trash" style="color:#ef4444;"></i> Clear Artboard</div>
+                    </div>
+                </div>
+
+                <!-- 2. Edit Menu -->
+                <div class="menu-item dropdown-parent">
+                    Edit <i class="fa-solid fa-chevron-down menubar-arrow"></i>
+                    <div class="menu-dropdown">
+                        <div class="dropdown-item" id="menu-undo"><i class="fa-solid fa-rotate-left"></i> Undo <span class="menu-shortcut">Ctrl+Z</span></div>
+                        <div class="dropdown-item" id="menu-redo"><i class="fa-solid fa-rotate-right"></i> Redo <span class="menu-shortcut">Ctrl+Y</span></div>
+                        <div class="dropdown-separator"></div>
+                        <div class="dropdown-item" id="menu-cut"><i class="fa-solid fa-scissors"></i> Cut Layer <span class="menu-shortcut">Ctrl+X</span></div>
+                        <div class="dropdown-item" id="menu-copy"><i class="fa-solid fa-copy"></i> Copy Layer / SVG <span class="menu-shortcut">Ctrl+C</span></div>
+                        <div class="dropdown-item" id="menu-paste"><i class="fa-solid fa-paste"></i> Paste Layer <span class="menu-shortcut">Ctrl+V</span></div>
+                        <div class="dropdown-separator"></div>
+                        <div class="dropdown-item" id="menu-select-all"><i class="fa-solid fa-object-group"></i> Select All <span class="menu-shortcut">Ctrl+A</span></div>
+                        <div class="dropdown-item" id="menu-deselect"><i class="fa-solid fa-object-ungroup"></i> Deselect <span class="menu-shortcut">Ctrl+D</span></div>
+                        <div class="dropdown-item" id="menu-invert-sel"><i class="fa-solid fa-arrows-rotate"></i> Invert Selection</div>
+                        <div class="dropdown-item" id="menu-delete-sel"><i class="fa-solid fa-eraser"></i> Delete Selected <span class="menu-shortcut">Del</span></div>
+                    </div>
+                </div>
+
+                <!-- 3. View Menu -->
+                <div class="menu-item dropdown-parent">
+                    View <i class="fa-solid fa-chevron-down menubar-arrow"></i>
+                    <div class="menu-dropdown">
+                        <div class="dropdown-item" id="menu-zoom-in"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom In <span class="menu-shortcut">Ctrl++</span></div>
+                        <div class="dropdown-item" id="menu-zoom-out"><i class="fa-solid fa-magnifying-glass-minus"></i> Zoom Out <span class="menu-shortcut">Ctrl+-</span></div>
+                        <div class="dropdown-item" id="menu-zoom-fit"><i class="fa-solid fa-expand"></i> Fit to Screen <span class="menu-shortcut">Ctrl+0</span></div>
+                        <div class="dropdown-item" id="menu-zoom-100"><i class="fa-solid fa-compress"></i> Actual Size (100%) <span class="menu-shortcut">Ctrl+1</span></div>
+                        <div class="dropdown-separator"></div>
+                        <div class="dropdown-item" id="menu-toggle-grid"><i class="fa-solid fa-border-all"></i> Toggle Dot Grid <span class="menu-shortcut">Ctrl+'</span></div>
+                        <div class="dropdown-item" id="menu-toggle-hud"><i class="fa-solid fa-gauge-high"></i> Toggle 60 FPS HUD</div>
+                    </div>
+                </div>
+
+                <!-- 4. Vector / Object Menu -->
+                <div class="menu-item dropdown-parent">
+                    Vector <i class="fa-solid fa-chevron-down menubar-arrow"></i>
+                    <div class="menu-dropdown">
+                        <div class="dropdown-item" id="menu-trace-action"><i class="fa-solid fa-bolt" style="color:#3fe9ff;"></i> Vectorize Image <span class="menu-shortcut">⚡</span></div>
+                        <div class="dropdown-item" id="menu-smooth-curves"><i class="fa-solid fa-bezier-curve"></i> Smooth Curves</div>
+                        <div class="dropdown-item" id="menu-simplify-paths"><i class="fa-solid fa-wave-square"></i> Simplify Points</div>
+                        <div class="dropdown-separator"></div>
+                        <div class="dropdown-item" id="menu-group-layers"><i class="fa-solid fa-layer-group"></i> Group Layers <span class="menu-shortcut">Ctrl+G</span></div>
+                        <div class="dropdown-item" id="menu-ungroup-layers"><i class="fa-solid fa-object-ungroup"></i> Ungroup <span class="menu-shortcut">Ctrl+Shift+G</span></div>
+                        <div class="dropdown-item" id="menu-flip-horiz"><i class="fa-solid fa-arrows-left-right"></i> Flip Horizontal</div>
+                        <div class="dropdown-item" id="menu-flip-vert"><i class="fa-solid fa-arrows-up-down"></i> Flip Vertical</div>
+                        <div class="dropdown-item" id="menu-extract-top"><i class="fa-solid fa-clone"></i> Extract Foreground</div>
+                    </div>
+                </div>
+
+                <!-- 5. AI Studio Menu -->
+                <div class="menu-item dropdown-parent">
+                    AI Studio <i class="fa-solid fa-chevron-down menubar-arrow"></i>
+                    <div class="menu-dropdown">
+                        <div class="dropdown-item" id="menu-ai-generate"><i class="fa-solid fa-robot" style="color:#8b5cf6;"></i> AI Prompt Generator...</div>
+                        <div class="dropdown-item" id="menu-ai-upscale-1000"><i class="fa-solid fa-wand-magic-sparkles" style="color:#3fe9ff;"></i> Enhance 1000% Neural Upscale</div>
+                        <div class="dropdown-separator"></div>
+                        <div class="dropdown-item" id="menu-load-saas-3d"><i class="fa-solid fa-chart-simple"></i> Load 3D SaaS Analytics</div>
+                        <div class="dropdown-item" id="menu-load-nature-3d"><i class="fa-solid fa-tree"></i> Load 3D Marketing Card</div>
+                        <div class="dropdown-item" id="menu-banana-pro-link"><i class="fa-solid fa-lemon" style="color:#f8e71c;"></i> Open Banana Pro Studio</div>
+                    </div>
+                </div>
+
+                <!-- 6. Settings & Themes (White, Black, Black/White) -->
+                <div class="menu-item dropdown-parent">
+                    Settings <i class="fa-solid fa-chevron-down menubar-arrow"></i>
+                    <div class="menu-dropdown">
+                        <div style="padding: 6px 12px; font-size: 10px; font-weight: 700; color: #a1a1aa; text-transform: uppercase;">Canvas Theme</div>
+                        <div class="dropdown-item theme-option active" id="theme-btn-obsidian"><i class="fa-solid fa-moon"></i> Obsidian Black (Dark)</div>
+                        <div class="dropdown-item theme-option" id="theme-btn-light"><i class="fa-solid fa-sun"></i> Clean White Studio (Light)</div>
+                        <div class="dropdown-item theme-option" id="theme-btn-contrast"><i class="fa-solid fa-circle-half-stroke"></i> Dual Black & White (High Contrast)</div>
+                        <div class="dropdown-separator"></div>
+                        <div class="dropdown-item" id="menu-autosave-toggle"><i class="fa-solid fa-cloud-arrow-up"></i> Autosave: <span id="autosave-status" style="color:#10b981; font-weight:700; margin-left:4px;">ON</span></div>
+                        <div class="dropdown-item" id="menu-reset-workspace"><i class="fa-solid fa-rotate"></i> Reset Workspace to Default</div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="spacer"></div>
+
+            <!-- Aceternity Floating Dock -->
+            <div class="floating-dock-wrapper">
+                <nav class="floating-dock">
+                    <a href="login.html" class="dock-item" title="Home / Landing">
+                        <i class="fa-solid fa-house"></i>
+                        <span class="dock-tooltip">Home</span>
+                    </a>
+                    <div class="dock-item active" id="dock-tool-select" title="Selection Tool (V)">
+                        <i class="fa-solid fa-arrow-pointer"></i>
+                        <span class="dock-tooltip">Select (V)</span>
+                    </div>
+                    <div class="dock-item" id="dock-tool-pen" title="Pen Tool (P)">
+                        <i class="fa-solid fa-pen-nib"></i>
+                        <span class="dock-tooltip">Pen (P)</span>
+                    </div>
+                    <div class="dock-item" id="dock-action-trace" style="color: #ff9a00;" title="Vectorize / Trace">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span class="dock-tooltip">Vectorize</span>
+                    </div>
+                    <a href="banana_pro.html" class="dock-item" style="color: #f8e71c;" title="Banana Pro AI">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span class="dock-tooltip">Banana Pro</span>
+                    </a>
+                    <div class="dock-item" id="btn-open-dialog" title="AI Prompt Generator">
+                        <i class="fa-solid fa-robot"></i>
+                        <span class="dock-tooltip">AI Prompt</span>
+                    </div>
+                    <div class="dock-item" id="dock-action-copy" title="Copy SVG Code">
+                        <i class="fa-solid fa-code"></i>
+                        <span class="dock-tooltip">Copy SVG</span>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="spacer"></div>
+
+            <!-- Aceternity ImagesBadge (Interactive Template Stack) -->
+            <div class="images-badge" id="images-badge-templates" title="Click to load Marketing Template">
+                <div class="badge-strip">
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=alpha&backgroundColor=1e293b" alt="T1"></div>
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=beta&backgroundColor=0f172a" alt="T2"></div>
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=gamma&backgroundColor=172554" alt="T3"></div>
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=delta&backgroundColor=1c1917" alt="T4"></div>
+                    <div class="badge-card"><img src="https://api.dicebear.com/9.x/shapes/svg?seed=epsilon&backgroundColor=14532d" alt="T5"></div>
+                </div>
+                <span class="badge-label">Marketing Templates</span>
+            </div>
+
+            <!-- Pro Badge & Auth -->
+            <a href="banana_pro.html" class="pro-chip" title="Upgrade to Pro"><i class="fa-solid fa-sparkles"></i> PRO</a>
+            <div id="auth-section" class="auth-box">
+                <!-- Dynamically populated by JS -->
+            </div>
+        </header>
+
+        <!-- Top Control Bar (Figma / Linear Style) -->
+        <div class="top-control-bar">
+            <div class="control-item" id="selection-label"><span class="status-dot"></span> <strong>Canvas Ready</strong></div>
+            <div class="separator"></div>
+            <div class="control-item">Opacity <input type="number" id="top-opacity" value="100" min="0" max="100" style="width: 48px;">%</div>
+            <div class="separator"></div>
+            <div class="control-item btn-icon-group">
+                <button class="ctrl-icon-btn" title="Align Left"><i class="fa-solid fa-align-left"></i></button>
+                <button class="ctrl-icon-btn" title="Align Center"><i class="fa-solid fa-align-center"></i></button>
+                <button class="ctrl-icon-btn" title="Align Right"><i class="fa-solid fa-align-right"></i></button>
+            </div>
+            <div class="separator"></div>
+            <div class="control-item">X: <input type="number" id="top-x" value="0" style="width: 55px;"></div>
+            <div class="control-item">Y: <input type="number" id="top-y" value="0" style="width: 55px;"></div>
+            <div class="control-item">W: <input type="number" id="top-w" value="0" style="width: 55px;"></div>
+            <div class="control-item">H: <input type="number" id="top-h" value="0" style="width: 55px;"></div>
+        </div>
+
+        <div class="main-workspace">
+            <!-- Left Floating Toolbar -->
+            <aside class="toolbar">
+                <div class="tool active" data-tool="select" title="Selection Tool (V)"><i class="fa-solid fa-arrow-pointer"></i></div>
+                <div class="tool" data-tool="move" title="Move Tool (M)"><i class="fa-solid fa-up-down-left-right"></i></div>
+                <div class="tool" data-tool="hand" title="Hand Tool (H) — Pan Canvas"><i class="fa-solid fa-hand"></i></div>
+                <div class="tool" data-tool="zoom" title="Zoom Tool (Z)"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <div class="tool-sep"></div>
+                <div class="tool" data-tool="eraser" title="Eraser Tool (E) — Delete"><i class="fa-solid fa-eraser"></i></div>
+                <div class="tool" data-tool="eyedropper" title="Eyedropper (I)"><i class="fa-solid fa-eye-dropper"></i></div>
+                <div class="tool" data-tool="pen" title="Pen Tool (P) — Draw Vector"><i class="fa-solid fa-pen-nib"></i></div>
+                <div class="tool" data-tool="rect" title="Rectangle Tool (R)"><i class="fa-solid fa-vector-square"></i></div>
+                <div class="tool" data-tool="text" title="Text Tool (T)"><i class="fa-solid fa-font"></i></div>
+            </aside>
+
+            <!-- Center Infinite Canvas Area -->
+            <main class="canvas-area bg-mode-dots" id="drop-zone">
+                <canvas id="canvas-space-topo" class="canvas-space-topo"></canvas>
+                
+                <div class="canvas-tabs">
+                    <div class="tab active"><i class="fa-solid fa-bezier-curve" style="color:#0ea5e9; margin-right:6px;"></i> Workspace @ <span id="zoom-display">100</span>% <i class="fa-solid fa-xmark" style="margin-left:8px; opacity:0.6;"></i></div>
+                    
+                    <!-- Space FX Background Theme Selector (Dots vs WebGL Topo Field vs Grid) -->
+                    <div class="canvas-bg-switcher">
+                        <span style="font-size: 11px; color: #a1a1aa; font-weight: 700; text-transform: uppercase; margin-right: 4px;"><i class="fa-solid fa-layer-group"></i> Space FX:</span>
+                        <button class="bg-mode-btn active" data-bg="dots" id="btn-bg-dots" title="Dot Pattern Motion Matrix"><i class="fa-solid fa-braille"></i> Dots</button>
+                        <button class="bg-mode-btn" data-bg="topo" id="btn-bg-topo" title="WebGL Simplex Topo Field"><i class="fa-solid fa-water"></i> Topo Field</button>
+                        <button class="bg-mode-btn" data-bg="grid" id="btn-bg-grid" title="Clean 3D Studio Grid"><i class="fa-solid fa-border-all"></i> Grid</button>
+                        <button class="bg-mode-btn" data-bg="clean" id="btn-bg-clean" title="Minimal Pure Dark"><i class="fa-solid fa-circle"></i> Clean</button>
+                        
+                        <div class="separator" style="height: 14px; width: 1px; margin: 0 4px; background: rgba(255,255,255,0.12);"></div>
+                        <span style="font-size: 11px; color: #a1a1aa; font-weight: 700; text-transform: uppercase; margin-right: 2px;"><i class="fa-solid fa-palette"></i> Color:</span>
+                        <div class="grid-color-picker-group">
+                            <button class="grid-color-swatch active" data-color="#10b981" style="background:#10b981;" title="Emerald Matrix"></button>
+                            <button class="grid-color-swatch" data-color="#3fe9ff" style="background:#3fe9ff;" title="Cyan Cyber"></button>
+                            <button class="grid-color-swatch" data-color="#a855f7" style="background:#a855f7;" title="Purple Synth"></button>
+                            <button class="grid-color-swatch" data-color="#fbbf24" style="background:#fbbf24;" title="Gold Kitty"></button>
+                            <button class="grid-color-swatch" data-color="#ef4444" style="background:#ef4444;" title="Red Bauhaus"></button>
+                            <button class="grid-color-swatch" data-color="#ffffff" style="background:#ffffff;" title="Clean White"></button>
+                            <input type="color" id="input-custom-grid-color" value="#10b981" title="Custom Grid Color" style="width:16px;height:16px;border:none;background:none;cursor:pointer;border-radius:50%;padding:0;">
+                        </div>
+                    </div>
+                </div>
+                <div class="artboard-container">
+                    <div class="artboard" id="artboard">
+                        <div id="placeholder-text">
+                            <div class="scp-editor-hero-logo-box">
+                                <img src="logo.svg" class="scp-editor-hero-logo scp-logo-spin" alt="SCP Logo">
+                                <div class="scp-logo-ambient-aura"></div>
+                            </div>
+                            <p style="font-size: 18px; font-weight: 800; color: #fff; margin-top: 14px; margin-bottom: 6px; letter-spacing: -0.3px;">SCP Precision Vector Artboard</p>
+                            <p style="font-size: 13px; color: #a1a1aa; max-width: 380px; line-height: 1.5;">Drop image here or click to browse • Instant 60 FPS Vector Trace & 3D Cards</p>
+                        </div>
+                        <img id="source-image" style="display:none;" />
+                        <div id="svg-output" style="display:none;"></div>
+                        <div id="interactive-card-output" style="display:none;"></div>
+                        <!-- Direct text editing overlay -->
+                        <div id="text-edit-overlay" contenteditable="true" style="display:none; position:absolute; font-family:sans-serif; font-size:24px; color:#000; outline:none; white-space:nowrap; z-index:500;"></div>
+                    </div>
+                </div>
+
+                <!-- Floating Context Action Bar -->
+                <div id="context-bar" class="context-bar" style="display: none;">
+                    <span class="context-label"><i class="fa-solid fa-layer-group"></i> Layer Selected</span>
+                    <button class="ctx-btn" id="ctx-duplicate"><i class="fa-solid fa-clone"></i> Duplicate</button>
+                    <button class="ctx-btn" id="ctx-delete"><i class="fa-solid fa-trash"></i> Remove</button>
+                    <button class="ctx-btn" id="ctx-front"><i class="fa-solid fa-arrow-up"></i> Front</button>
+                    <button class="ctx-btn" id="ctx-back"><i class="fa-solid fa-arrow-down"></i> Back</button>
+                    <button class="ctx-btn" id="ctx-color"><i class="fa-solid fa-palette"></i> Color</button>
+                    <input type="color" id="ctx-color-picker" style="width:0;height:0;opacity:0;position:absolute;">
+                    <button class="ctx-btn ctx-extract" id="ctx-extract"><i class="fa-solid fa-object-ungroup"></i> Extract SVG</button>
+                </div>
+
+                <!-- Liquid Morph Floating Menu Component (Framer/CSS Port) -->
+                <div class="liquid-morph-floating-menu-wrap" id="liquid-floating-menu">
+                    <div class="liquid-morph-pill" id="liquid-morph-pill">
+                        <!-- Yellow background layer -->
+                        <div class="liquid-bg-yellow"></div>
+                        <!-- Expanding dark circle from bottom -->
+                        <div class="liquid-circle-expand"></div>
+                        <!-- Liquid Menu Items -->
+                        <div class="liquid-menu-items">
+                            <button class="liquid-item-btn" id="lmb-home"><span class="liquid-text" data-text="HOME">HOME</span></button>
+                            <button class="liquid-item-btn" id="lmb-trace"><span class="liquid-text" data-text="VECTORIZE">VECTORIZE</span></button>
+                            <button class="liquid-item-btn" id="lmb-3d"><span class="liquid-text" data-text="3D CARDS">3D CARDS</span></button>
+                            <button class="liquid-item-btn" id="lmb-ai"><span class="liquid-text" data-text="AI PROMPT">AI PROMPT</span></button>
+                        </div>
+                        <!-- Bottom Bar: Menu + Hamburger -->
+                        <div class="liquid-bottom-bar" id="liquid-trigger">
+                            <span class="liquid-label">Menu</span>
+                            <div class="liquid-hamburger">
+                                <span class="ham-line ham-1"></span>
+                                <span class="ham-line ham-2"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Ultra-Modern Studio Sidebar -->
+            <aside class="studio-sidebar">
+                <!-- Tab Navigation Switcher -->
+                <div class="sidebar-tabs">
+                    <button class="sidebar-tab-btn active" data-tab="tab-trace"><i class="fa-solid fa-bolt"></i> Vectorize</button>
+                    <button class="sidebar-tab-btn" data-tab="tab-3d-cards"><i class="fa-solid fa-cubes"></i> 3D Cards</button>
+                    <button class="sidebar-tab-btn" data-tab="tab-inspector"><i class="fa-solid fa-sliders"></i> Inspector</button>
+                    <button class="sidebar-tab-btn" data-tab="tab-layers"><i class="fa-solid fa-layer-group"></i> Layers</button>
+                </div>
+
+                <div class="sidebar-content">
+                    <!-- Tab 1: Vectorize & Trace Engine -->
+                    <div id="tab-trace" class="sidebar-tab-pane active">
+                        <div class="sidebar-section">
+                            <button id="btn-trace" class="button btn-gradient-trace" disabled>
+                                <span class="blob1"></span>
+                                <span class="inner"><i class="fa-solid fa-wand-magic-sparkles" style="color: #3fe9ff;"></i> Vectorize Image</span>
+                            </button>
+                            <button id="btn-upscale" class="btn-secondary-modern" style="margin-top: 8px; width: 100%;" disabled>
+                                <i class="fa-solid fa-expand"></i> Enhance 1000%
+                            </button>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Tracing Presets</div>
+                            <div class="preset-chips">
+                                <button class="preset-chip active" data-val="default">Default</button>
+                                <button class="preset-chip" data-val="sharp">Ultra Sharp</button>
+                                <button class="preset-chip" data-val="photo">High Fidelity</button>
+                                <button class="preset-chip" data-val="bw">B & W</button>
+                                <button class="preset-chip" data-val="sketch">Sketch</button>
+                            </div>
+                            <select id="preset-select" style="display:none;">
+                                <option value="default" selected>Default</option>
+                                <option value="sharp">Ultra Sharp</option>
+                                <option value="photo">High Fidelity</option>
+                                <option value="bw">Black & White</option>
+                                <option value="sketch">Sketch</option>
+                            </select>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Vector Parameters</div>
+                            <div class="param-row">
+                                <label>Color Depth</label>
+                                <span class="param-badge" id="colors-val">6</span>
+                                <div class="wave-bar-slider" data-target="colors-range">
+                                    <div class="wb-tooltip">6</div>
+                                    <div class="wb-track"></div>
+                                    <input type="range" id="colors-range" min="1" max="10" value="6">
+                                </div>
+                            </div>
+                            <div class="param-row">
+                                <label>Noise Filter</label>
+                                <span class="param-badge" id="blur-val">4</span>
+                                <div class="wave-bar-slider" data-target="blur-range">
+                                    <div class="wb-tooltip">4</div>
+                                    <div class="wb-track"></div>
+                                    <input type="range" id="blur-range" min="0" max="20" value="4">
+                                </div>
+                            </div>
+                            <div class="param-row">
+                                <label>Corner Smoothness</label>
+                                <span class="param-badge" id="smooth-val">60</span>
+                                <div class="wave-bar-slider" data-target="smooth-range">
+                                    <div class="wb-tooltip">60</div>
+                                    <div class="wb-track"></div>
+                                    <input type="range" id="smooth-range" min="10" max="120" step="5" value="60">
+                                </div>
+                            </div>
+                            <div class="param-row" style="margin-top: 8px;">
+                                <label>View Mode</label>
+                                <select id="view-mode" class="modern-select">
+                                    <option value="tracing">Vector Output</option>
+                                    <option value="source">Source Image</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Upgraded Export & Actions Hub -->
+                        <div class="sidebar-section">
+                            <div class="action-box-header">
+                                <div class="sidebar-section-title" style="padding:0; margin:0;"><i class="fa-solid fa-file-export" style="color: #3fe9ff;"></i> Export Hub</div>
+                                <span class="action-status-tag active" id="export-status-indicator">READY</span>
+                            </div>
+                            <div class="modern-action-grid">
+                                <button id="btn-expand" class="modern-action-btn" disabled><i class="fa-solid fa-file-code" style="color: #3fe9ff;"></i> SVG</button>
+                                <button id="btn-download-gif" class="modern-action-btn" disabled><i class="fa-solid fa-file-image" style="color: #a855f7;"></i> GIF</button>
+                            </div>
+                            <div style="padding: 0 14px 14px 14px; display: flex; flex-direction: column; gap: 8px;">
+                                <button id="btn-extract-layer" class="modern-action-btn" style="width: 100%; display: none;"><i class="fa-solid fa-crop-simple"></i> Extract SVG Layer</button>
+                                <button id="btn-clear" class="modern-action-btn danger" style="width: 100%;"><i class="fa-solid fa-trash"></i> Clear Artboard</button>
+                            </div>
+                        </div>
+
+                        <!-- Upgraded SVG Code Inspector Box -->
+                        <div class="sidebar-section">
+                            <div class="action-box-header">
+                                <div class="sidebar-section-title" style="padding:0; margin:0;"><i class="fa-solid fa-code" style="color: #10b981;"></i> SVG Code</div>
+                                <span class="action-status-tag" id="code-status-indicator">0 BYTES</span>
+                            </div>
+                            <div class="code-output-wrapper">
+                                <textarea id="svg-code-output" readonly placeholder="SVG code will generate here automatically..." class="modern-code-view"></textarea>
+                                <button id="btn-copy-code" class="modern-action-btn" style="width: 100%; margin-top: 8px;" disabled><i class="fa-solid fa-copy"></i> Copy SVG String</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Aceternity 3D Cards & Template Library -->
+                    <div id="tab-3d-cards" class="sidebar-tab-pane">
+                        <!-- Customizer Studio -->
+                        <div class="sidebar-section" id="card-customizer-section">
+                            <div class="sidebar-section-title"><i class="fa-solid fa-wand-magic-sparkles" style="color:#0ea5e9;"></i> 3D Card Customizer</div>
+                            
+                            <div class="param-row">
+                                <label>Card Title</label>
+                                <input type="text" id="cust-title" value="Make things float in air" class="modern-input" style="grid-column: 1 / -1; width: 100%;">
+                            </div>
+
+                            <div class="param-row" style="margin-top: 4px;">
+                                <label>Description / Subtitle</label>
+                                <textarea id="cust-desc" class="modern-input" style="grid-column: 1 / -1; width: 100%; height: 50px; resize: vertical;">Hover over this card to unleash the power of CSS perspective</textarea>
+                            </div>
+
+                            <div class="param-row" style="margin-top: 4px;">
+                                <label>Image / Media</label>
+                                <div style="grid-column: 1 / -1; display: flex; gap: 6px;">
+                                    <input type="text" id="cust-img-url" value="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop" class="modern-input" style="flex: 1;">
+                                    <button class="btn-secondary-modern" id="btn-browse-card-img" title="Upload Image"><i class="fa-solid fa-upload"></i></button>
+                                    <input type="file" id="input-card-file" accept="image/*" style="display:none;">
+                                </div>
+                            </div>
+
+                            <!-- Quick Image Presets -->
+                            <div class="preset-chips" style="margin-top: 2px;">
+                                <button class="preset-chip active" data-img="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop">🌲 Nature</button>
+                                <button class="preset-chip" data-img="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2560&auto=format&fit=crop">🌌 Cyber</button>
+                                <button class="preset-chip" data-img="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2560&auto=format&fit=crop">📊 SaaS</button>
+                                <button class="preset-chip" data-img="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2560&auto=format&fit=crop">🎨 Abstract</button>
+                            </div>
+
+                            <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
+                                <div>
+                                    <label style="font-size: 10px; color: #a1a1aa;">Link Text</label>
+                                    <input type="text" id="cust-link-text" value="Try now →" class="modern-input" style="width: 100%;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 10px; color: #a1a1aa;">Button Text</label>
+                                    <input type="text" id="cust-btn-text" value="Sign up" class="modern-input" style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3D Depth & Physics Controls -->
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title"><i class="fa-solid fa-cubes" style="color:#10b981;"></i> 3D Depth (Z-Translation)</div>
+                            
+                            <div class="param-row">
+                                <label>Title Depth (Z)</label>
+                                <span class="param-badge" id="tz-title-val">50px</span>
+                                <div class="wave-bar-slider" data-target="tz-title-range">
+                                    <div class="wb-tooltip">50</div>
+                                    <div class="wb-track"></div>
+                                    <input type="range" id="tz-title-range" min="0" max="120" value="50">
+                                </div>
+                            </div>
+                            <div class="param-row">
+                                <label>Subtitle Depth (Z)</label>
+                                <span class="param-badge" id="tz-desc-val">60px</span>
+                                <div class="wave-bar-slider" data-target="tz-desc-range">
+                                    <div class="wb-tooltip">60</div>
+                                    <div class="wb-track"></div>
+                                    <input type="range" id="tz-desc-range" min="0" max="120" value="60">
+                                </div>
+                            </div>
+                            <div class="param-row">
+                                <label>Image Floating Depth (Z)</label>
+                                <span class="param-badge" id="tz-img-val">100px</span>
+                                <div class="wave-bar-slider" data-target="tz-img-range">
+                                    <div class="wb-tooltip">100</div>
+                                    <div class="wb-track"></div>
+                                    <input type="range" id="tz-img-range" min="0" max="180" value="100">
+                                </div>
+                            </div>
+                            <div class="param-row">
+                                <label>Buttons Depth (Z)</label>
+                                <span class="param-badge" id="tz-btn-val">30px</span>
+                                <div class="wave-bar-slider" data-target="tz-btn-range">
+                                    <div class="wb-tooltip">30</div>
+                                    <div class="wb-track"></div>
+                                    <input type="range" id="tz-btn-range" min="0" max="100" value="30">
+                                </div>
+                            </div>
+                            <div class="param-row">
+                                <label>Tilt Sensitivity</label>
+                                <span class="param-badge" id="tilt-sens-val">10</span>
+                                <div class="wave-bar-slider" data-target="tilt-sens-range">
+                                    <div class="wb-tooltip">10</div>
+                                    <div class="wb-track"></div>
+                                    <input type="range" id="tilt-sens-range" min="4" max="25" value="10">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Theme & Colors -->
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title"><i class="fa-solid fa-palette" style="color:#f59e0b;"></i> Card Styling & Glow</div>
+                            <div class="param-row">
+                                <label>Card Background</label>
+                                <select id="cust-card-bg" class="modern-select" style="grid-column: 1 / -1; width: 100%;">
+                                    <option value="#09090b" selected>Obsidian Black (#09090b)</option>
+                                    <option value="#0f172a">Deep Slate (#0f172a)</option>
+                                    <option value="#180b2b">Midnight Purple (#180b2b)</option>
+                                    <option value="rgba(255, 255, 255, 0.05)">Translucent Glass</option>
+                                </select>
+                            </div>
+                            <div class="param-row" style="margin-top: 4px;">
+                                <label>Glow Highlight Theme</label>
+                                <div class="preset-chips" id="glow-theme-chips" style="grid-column: 1 / -1;">
+                                    <button class="preset-chip active" data-glow="emerald">Emerald</button>
+                                    <button class="preset-chip" data-glow="cyan">Cyan</button>
+                                    <button class="preset-chip" data-glow="purple">Purple</button>
+                                    <button class="preset-chip" data-glow="amber">Amber</button>
+                                </div>
+                            </div>
+                            <div class="param-row" style="margin-top: 4px;">
+                                <label>Border Radius</label>
+                                <span class="param-badge" id="cust-radius-val">20px</span>
+                                <div class="wave-bar-slider" data-target="cust-radius-range">
+                                    <div class="wb-tooltip">20</div>
+                                    <div class="wb-track"></div>
+                                    <input type="range" id="cust-radius-range" min="0" max="40" value="20">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="sidebar-section">
+                            <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <button class="btn-secondary-modern" id="btn-copy-react-code"><i class="fa-brands fa-react"></i> Copy React</button>
+                                <button class="btn-secondary-modern" id="btn-randomize-3d"><i class="fa-solid fa-dice"></i> Randomize</button>
+                            </div>
+                            <button class="button btn-gradient-trace" id="btn-apply-load-card" style="margin-top: 8px;">
+                                <span class="blob1"></span>
+                                <span class="inner"><i class="fa-solid fa-layer-group" style="color: #3fe9ff;"></i> Apply to Canvas</span>
+                            </button>
+                        </div>
+
+                        <!-- 8 Rich 3D Motion Templates & Presets (Gold, Black, White Awards + More) -->
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title"><i class="fa-solid fa-shapes" style="color: #a855f7;"></i> 3D Motion Template Library</div>
+                            
+                            <!-- Template 1: 3D Award Badge (Gold Original Edition) -->
+                            <div class="card-container-3d">
+                                <div class="card-body-3d" id="card-preset-award" style="background: radial-gradient(circle 300px at 50% 0%, rgba(245, 158, 11, 0.12), rgba(12, 12, 14, 0.9)); border-color: rgba(245, 158, 11, 0.35);">
+                                    <div class="card-item-3d card-title-3d" data-tz="30" style="color: #fef08a;"><i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> Product Hunt Award (Gold)</div>
+                                    <div class="card-item-3d card-desc-3d" data-tz="40">Original Golden Kitty Winner #1 with shimmering foil reflections</div>
+                                    <div class="card-item-3d" data-tz="70" style="margin-bottom: 12px; display: flex; justify-content: center;">
+                                        <div class="award-badge-3d-wrap">
+                                            <div class="award-badge-3d-inner award-badge-gold">
+                                                <div class="award-badge-title">PRODUCT HUNT</div>
+                                                <div class="award-badge-category">🏆 Golden Kitty Awards #1</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-item-3d card-footer-3d" data-tz="30">
+                                        <span class="card-btn-link" id="btn-try-award" style="color: #fbbf24;">View Live →</span>
+                                        <button class="editor-status-btn btn-status-pending" id="btn-load-preset-award">Load Gold</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 2: 3D Award Badge (Stealth Obsidian Black Edition) -->
+                            <div class="card-container-3d" style="margin-top: 14px;">
+                                <div class="card-body-3d" id="card-preset-award-black" style="background: radial-gradient(circle 300px at 50% 0%, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.98)); border-color: rgba(255, 255, 255, 0.25);">
+                                    <div class="card-item-3d card-title-3d" data-tz="30" style="color: #ffffff;"><i class="fa-solid fa-moon" style="color:#e4e4e7;"></i> Product Hunt Award (Black)</div>
+                                    <div class="card-item-3d card-desc-3d" data-tz="40">Stealth Obsidian Black edition with silver foil glare & dark aesthetic</div>
+                                    <div class="card-item-3d" data-tz="70" style="margin-bottom: 12px; display: flex; justify-content: center;">
+                                        <div class="award-badge-3d-wrap">
+                                            <div class="award-badge-3d-inner award-badge-black">
+                                                <div class="award-badge-title">PRODUCT HUNT</div>
+                                                <div class="award-badge-category">🏆 Product of the Day #1</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-item-3d card-footer-3d" data-tz="30">
+                                        <span class="card-btn-link" id="btn-try-award-black" style="color: #ffffff;">View Live →</span>
+                                        <button class="editor-status-btn btn-status-submitted" id="btn-load-preset-award-black">Load Black</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 3: 3D Award Badge (Studio Clean White Edition) -->
+                            <div class="card-container-3d" style="margin-top: 14px;">
+                                <div class="card-body-3d" id="card-preset-award-white" style="background: radial-gradient(circle 300px at 50% 0%, rgba(255, 255, 255, 0.2), rgba(20, 20, 24, 0.95)); border-color: rgba(255, 255, 255, 0.35);">
+                                    <div class="card-item-3d card-title-3d" data-tz="30" style="color: #ffffff;"><i class="fa-solid fa-sun" style="color:#fbbf24;"></i> Product Hunt Award (White)</div>
+                                    <div class="card-item-3d card-desc-3d" data-tz="40">Minimalist Studio Snow White edition with rainbow holographic foil</div>
+                                    <div class="card-item-3d" data-tz="70" style="margin-bottom: 12px; display: flex; justify-content: center;">
+                                        <div class="award-badge-3d-wrap">
+                                            <div class="award-badge-3d-inner award-badge-white">
+                                                <div class="award-badge-title">PRODUCT HUNT</div>
+                                                <div class="award-badge-category">🏆 Product of the Month #1</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-item-3d card-footer-3d" data-tz="30">
+                                        <span class="card-btn-link" id="btn-try-award-white" style="color: #38bdf8;">View Live →</span>
+                                        <button class="editor-status-btn btn-status-inprogress" id="btn-load-preset-award-white">Load White</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 4: Live Status Badges & Motion Matrix -->
+                            <div class="card-container-3d" style="margin-top: 14px;">
+                                <div class="card-body-3d" id="card-preset-status" style="background: radial-gradient(circle 300px at 50% 0%, rgba(16, 185, 129, 0.1), rgba(12, 12, 14, 0.9)); border-color: rgba(16, 185, 129, 0.3);">
+                                    <div class="card-item-3d card-title-3d" data-tz="30"><i class="fa-solid fa-signal" style="color:#10b981;"></i> Status Badge Matrix</div>
+                                    <div class="card-item-3d card-desc-3d" data-tz="40">Dynamic status pill indicators with pulsing multi-tier feedback</div>
+                                    <div class="card-item-3d" data-tz="65" style="margin-bottom: 10px;">
+                                        <div class="status-pill-grid">
+                                            <span class="status-badge-item status-badge-success"><i class="fa-solid fa-circle-check"></i> Success</span>
+                                            <span class="status-badge-item status-badge-inprogress"><i class="fa-solid fa-spinner fa-spin"></i> Running</span>
+                                            <span class="status-badge-item status-badge-pending"><i class="fa-solid fa-triangle-exclamation"></i> Pending</span>
+                                            <span class="status-badge-item status-badge-inreview"><i class="fa-solid fa-magnifying-glass"></i> In Review</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-item-3d card-footer-3d" data-tz="30">
+                                        <span class="card-btn-link" id="btn-try-status" style="color: #34d399;">Interact →</span>
+                                        <button class="editor-status-btn btn-status-success" id="btn-load-preset-status">Load Status</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 5: Cyberpunk AI Neural Core Card -->
+                            <div class="card-container-3d" style="margin-top: 14px;">
+                                <div class="card-body-3d cyberpunk-card-canvas" id="card-preset-cyber">
+                                    <div class="card-item-3d" data-tz="30">
+                                        <span class="cyberpunk-glitch-badge"><i class="fa-solid fa-microchip"></i> Neural Core v4.8</span>
+                                    </div>
+                                    <div class="card-item-3d card-title-3d" data-tz="40" style="color: #f0abfc;">Cyberpunk AI Synth 3D</div>
+                                    <div class="card-item-3d card-desc-3d" data-tz="50">Neon purple grid architecture with floating telemetry</div>
+                                    <div class="card-item-3d" data-tz="80">
+                                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2560&auto=format&fit=crop" class="card-img-3d" alt="Cyber Preset">
+                                    </div>
+                                    <div class="card-item-3d card-footer-3d" data-tz="30">
+                                        <span class="card-btn-link" id="btn-try-cyber" style="color: #c084fc;">Overclock →</span>
+                                        <button class="editor-status-btn btn-status-submitted" id="btn-load-preset-cyber">Load Cyber</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 6: SaaS Analytics Dashboard -->
+                            <div class="card-container-3d" style="margin-top: 14px;">
+                                <div class="card-body-3d card-3d-interactive" id="card-preset-saas">
+                                    <div class="card-item-3d card-title-3d" data-tz="40"><i class="fa-solid fa-chart-line" style="color: #38bdf8;"></i> SaaS Metrics Dashboard</div>
+                                    <div class="card-item-3d card-desc-3d" data-tz="50">Multi-layer vector chart card with real-time stats & telemetry</div>
+                                    <div class="card-item-3d" data-tz="80">
+                                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2560&auto=format&fit=crop" class="card-img-3d" alt="Dashboard Preset">
+                                    </div>
+                                    <div class="card-item-3d card-footer-3d" data-tz="30">
+                                        <span class="card-btn-link" id="btn-try-saas">Live Dash →</span>
+                                        <button class="editor-status-btn btn-status-inprogress" id="btn-load-preset-saas">Load SaaS</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 7: Pro SaaS Tier Pricing Card -->
+                            <div class="card-container-3d" style="margin-top: 14px;">
+                                <div class="card-body-3d" id="card-preset-pricing" style="background: radial-gradient(circle 300px at 0% 0%, rgba(56, 189, 248, 0.12), rgba(12, 12, 14, 0.95)); border-color: rgba(56, 189, 248, 0.35);">
+                                    <div class="card-item-3d card-title-3d" data-tz="30"><i class="fa-solid fa-crown" style="color: #38bdf8;"></i> Pro Studio Unlimited</div>
+                                    <div class="card-item-3d card-desc-3d" data-tz="40">Full vector export suite with 1000% neural upscale</div>
+                                    <div class="card-item-3d" data-tz="75" style="margin-bottom: 12px;">
+                                        <div class="pricing-badge-canvas">$49 <span>/ month</span></div>
+                                        <div class="pricing-features-canvas">
+                                            <div class="pricing-feature-item"><i class="fa-solid fa-check"></i> Unlimited 4K Vector Exports</div>
+                                            <div class="pricing-feature-item"><i class="fa-solid fa-check"></i> Aceternity 3D Card Engine</div>
+                                            <div class="pricing-feature-item"><i class="fa-solid fa-check"></i> 60 FPS Real-Time Physics</div>
+                                        </div>
+                                    </div>
+                                    <div class="card-item-3d card-footer-3d" data-tz="30">
+                                        <span class="card-btn-link" id="btn-try-pricing" style="color: #38bdf8;">Compare →</span>
+                                        <button class="editor-status-btn btn-status-inprogress" id="btn-load-preset-pricing" style="background: #38bdf8; color: #000;">Load Pro</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 8: Nature / Marketing UI Card -->
+                            <div class="card-container-3d" style="margin-top: 14px;">
+                                <div class="card-body-3d" id="card-preset-nature">
+                                    <div class="card-item-3d card-title-3d" data-tz="40"><i class="fa-solid fa-mountain" style="color: #10b981;"></i> Marketing Vector Card</div>
+                                    <div class="card-item-3d card-desc-3d" data-tz="50">Hover to experience real-time 3D perspective depth</div>
+                                    <div class="card-item-3d" data-tz="80">
+                                        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop" class="card-img-3d" alt="Nature Vector Preset">
+                                    </div>
+                                    <div class="card-item-3d card-footer-3d" data-tz="30">
+                                        <span class="card-btn-link" id="btn-try-nature">Explore →</span>
+                                        <button class="editor-status-btn btn-status-success" id="btn-load-preset-nature">Load Vector</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Template 9: Swiss Bauhaus Dot Pattern Quote Card -->
+                            <div class="card-container-3d" style="margin-top: 14px;">
+                                <div class="card-body-3d dot-quote-card-canvas" id="card-preset-quote">
+                                    <div class="dot-quote-corner tl"></div>
+                                    <div class="dot-quote-corner tr"></div>
+                                    <div class="dot-quote-corner bl"></div>
+                                    <div class="dot-quote-corner br"></div>
+
+                                    <svg class="dot-quote-svg-bg" aria-hidden="true">
+                                        <defs>
+                                            <pattern id="dot-quote-preview-pat" width="8" height="8" patternUnits="userSpaceOnUse">
+                                                <circle cx="1" cy="1" r="0.8" />
+                                            </pattern>
+                                        </defs>
+                                        <rect width="100%" height="100%" fill="url(#dot-quote-preview-pat)" />
+                                    </svg>
+
+                                    <div class="dot-quote-content">
+                                        <div class="card-item-3d dot-quote-lead" data-tz="30">I BELIEVE</div>
+                                        <div class="card-item-3d dot-quote-big-text" data-tz="60" style="font-size: 16px; margin-bottom: 8px;">
+                                            "Design should be <span class="thin">easy to understand...</span>"
+                                        </div>
+                                        <div class="card-item-3d card-footer-3d" data-tz="30">
+                                            <span class="card-btn-link" id="btn-try-quote" style="color: #ef4444;">Read Quote →</span>
+                                            <button class="editor-status-btn btn-status-failed" id="btn-load-preset-quote" style="border-color: #ef4444;">Load Quote</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Inspector / Transform & Appearance -->
+                    <div id="tab-inspector" class="sidebar-tab-pane">
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Transform</div>
+                            <div class="transform-grid-modern">
+                                <div class="input-cell"><label>X</label><input type="number" id="prop-x" value="0"></div>
+                                <div class="input-cell"><label>Y</label><input type="number" id="prop-y" value="0"></div>
+                                <div class="input-cell"><label>W</label><input type="number" id="prop-w" value="0"></div>
+                                <div class="input-cell"><label>H</label><input type="number" id="prop-h" value="0"></div>
+                                <div class="input-cell full"><label>Rot</label><input type="text" id="prop-rot" value="0°"></div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Appearance & Colors</div>
+                            <div class="app-row-modern">
+                                <label>Fill Color</label>
+                                <div class="color-box-modern" id="prop-fill-box" style="background: #0ea5e9;"></div>
+                            </div>
+                            <div class="app-row-modern">
+                                <label>Stroke Color</label>
+                                <div class="color-box-modern stroke-box" id="prop-stroke-box"></div>
+                            </div>
+                            <div class="param-row" style="margin-top: 10px;">
+                                <label>Layer Opacity</label>
+                                <input type="number" id="prop-opacity" value="100" min="0" max="100" style="width: 50px;" class="modern-input">%
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Quick Actions</div>
+                            <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <button class="btn-secondary-modern" id="btn-ungroup">Ungroup</button>
+                                <button class="btn-secondary-modern" id="btn-recolor">Recolor</button>
+                            </div>
+                            <button class="btn-secondary-modern" id="btn-save-symbol" style="margin-top: 8px; width: 100%;">Save as Symbol</button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Layers Panel -->
+                    <div id="tab-layers" class="sidebar-tab-pane">
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">Vector Layers</div>
+                            <div class="layers-panel-modern" id="layers-panel">
+                                <div class="empty-state">Trace or load a vector to view individual layers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+        
+        <!-- Bottom Status Bar -->
+        <footer class="status-bar">
+            <div class="status-tag"><i class="fa-solid fa-circle" style="font-size: 8px; color: #10b981;"></i> 60 FPS Engine</div>
+            <div id="status-text">Ready — Drag an image or load a 3D Card preset</div>
+        </footer>
+    </div>
+
+    <!-- AI Prompt Dialog Modal -->
+    <div id="ai-dialog" class="ai-modal-overlay">
+        <div class="ai-modal-card">
+            <div class="ai-modal-header">
+                <h3><i class="fa-solid fa-robot" style="color:#3fe9ff;"></i> AI Vector Generator</h3>
+                <button id="btn-cancel-dialog" class="ai-modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="ai-modal-desc">Describe any logo, icon, or illustration you want to generate:</p>
+            <input type="text" id="ai-prompt-input-dialog" placeholder="e.g. Minimalist cybernetic fox logo vector" class="ai-modal-input">
+            <div class="ai-modal-footer">
+                <button id="btn-generate-dialog" class="button btn-gradient-trace">
+                    <span class="blob1"></span>
+                    <span class="inner"><i class="fa-solid fa-wand-magic-sparkles" style="color:#3fe9ff;"></i> Generate Vector Image</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.17/paper-core.min.js"></script>
+    <script src="app.js?v=5"></script>
+    <script>
+    /* ====================================================================
+       WAVE BAR SLIDER ENGINE — Pure JS port of slider-05 (Framer Motion)
+       Replaces native <input range> with animated bar visualisation
+       ==================================================================== */
+    (function initWaveBarSliders() {
+        const NUM_BARS = 32;
+        const PADDING = 8;
+        const MAX_DIP_DISTANCE = 100;
+
+        document.querySelectorAll('.wave-bar-slider').forEach(sliderEl => {
+            const input = sliderEl.querySelector('input[type="range"]');
+            const track = sliderEl.querySelector('.wb-track');
+            const tooltip = sliderEl.querySelector('.wb-tooltip');
+            if (!input || !track) return;
+
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            const step = parseFloat(input.step) || 1;
+            let value = parseFloat(input.value);
+            let mouseX = -999;
+            let isHovering = false;
+            let isDragging = false;
+
+            // Build bars
+            const bars = [];
+            track.innerHTML = '';
+            for (let i = 0; i < NUM_BARS; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'wb-bar';
+                track.appendChild(bar);
+                bars.push({ el: bar, currentH: 8, targetH: 8 });
+            }
+
+            function getProgress() {
+                return (value - min) / (max - min);
+            }
+
+            function calculateValue(x) {
+                const rect = sliderEl.getBoundingClientRect();
+                const innerW = rect.width - PADDING * 2;
+                const pct = Math.max(0, Math.min(1, (x - rect.left - PADDING) / innerW));
+                let v = min + pct * (max - min);
+                v = Math.round(v / step) * step;
+                return Math.max(min, Math.min(max, v));
+            }
+
+            function updateBars() {
+                const rect = sliderEl.getBoundingClientRect();
+                const innerW = rect.width - PADDING * 2;
+                const progress = getProgress();
+                const isActive = isHovering || isDragging;
+
+                bars.forEach((b, i) => {
+                    const barProgress = i / (NUM_BARS - 1);
+                    const isFilled = barProgress <= progress;
+
+                    const normalH = 8;
+                    const hoverBaseH = 42;
+                    const dipH = 16;
+
+                    let targetH = normalH;
+
+                    if (isActive) {
+                        targetH = hoverBaseH;
+                        const barX = rect.left + PADDING + barProgress * innerW;
+                        const dist = Math.abs(mouseX - barX);
+
+                        if (dist < MAX_DIP_DISTANCE) {
+                            const relDist = dist / MAX_DIP_DISTANCE;
+                            const dip = (Math.cos(relDist * Math.PI) + 1) / 2;
+                            targetH = hoverBaseH - dip * (hoverBaseH - dipH);
+                        }
+
+                        if (isFilled) {
+                            const activeArc = Math.sin(barProgress / Math.max(progress, 0.01) * Math.PI) * 4;
+                            targetH += activeArc;
+                        }
+                    }
+
+                    // Spring-like lerp
+                    b.targetH = targetH;
+                    b.currentH += (b.targetH - b.currentH) * 0.18;
+                    b.el.style.height = b.currentH + 'px';
+
+                    // Fill state
+                    if (isFilled) {
+                        b.el.classList.add('filled');
+                    } else {
+                        b.el.classList.remove('filled');
+                    }
+                });
+
+                requestAnimationFrame(updateBars);
+            }
+
+            function syncUI() {
+                input.value = value;
+                if (tooltip) tooltip.textContent = Math.round(value);
+                // Dispatch input event for existing listeners
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+
+            sliderEl.addEventListener('mouseenter', () => { isHovering = true; });
+            sliderEl.addEventListener('mouseleave', () => { isHovering = false; mouseX = -999; });
+            sliderEl.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                if (isDragging) {
+                    value = calculateValue(e.clientX);
+                    syncUI();
+                }
+            });
+
+            sliderEl.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                sliderEl.classList.add('active');
+                value = calculateValue(e.clientX);
+                syncUI();
+                e.preventDefault();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    sliderEl.classList.remove('active');
+                }
+            });
+
+            // Touch support
+            sliderEl.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                isHovering = true;
+                sliderEl.classList.add('active');
+                mouseX = e.touches[0].clientX;
+                value = calculateValue(mouseX);
+                syncUI();
+            }, { passive: true });
+
+            sliderEl.addEventListener('touchmove', (e) => {
+                mouseX = e.touches[0].clientX;
+                if (isDragging) {
+                    value = calculateValue(mouseX);
+                    syncUI();
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchend', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    isHovering = false;
+                    sliderEl.classList.remove('active');
+                }
+            });
+
+            // Position tooltip to track mouse
+            sliderEl.addEventListener('mousemove', (e) => {
+                if (tooltip) {
+                    const rect = sliderEl.getBoundingClientRect();
+                    const pct = ((e.clientX - rect.left) / rect.width) * 100;
+                    tooltip.style.left = pct + '%';
+                }
+            });
+
+            // Initialize
+            syncUI();
+            requestAnimationFrame(updateBars);
+        });
+    })();
+    </script>
+    <!-- Firebase Auth & Firestore Service -->
+    <script type="module" src="firebase-service.js"></script>
+</body>
+</html>

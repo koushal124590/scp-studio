@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans & Pricing - SCP Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-obsidian: #000000;
+            --card-glass: rgba(10, 12, 18, 0.78);
+            --chroma-cyan: #3fe9ff;
+            --chroma-purple: #a855f7;
+            --chroma-pink: #ec4899;
+            --chroma-amber: #f59e0b;
+            --chroma-emerald: #10b981;
+            --chroma-indigo: #6366f1;
+            
+            --grad-hologram: linear-gradient(135deg, #3fe9ff 0%, #a855f7 35%, #ec4899 70%, #f59e0b 100%);
+            --grad-cyber: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+            --grad-sunset: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%);
+            --grad-aurora: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* WebGL Mesh Drift Background */
+        #mesh-drift-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .gradient-vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 20%, rgba(0,0,0,0.4) 0%, rgba(0, 0, 0, 0.88) 85%),
+                        linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 40%, rgba(0,0,0,0.95) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Page Wrapper with Spacing */
+        .pricing-page-wrapper {
+            position: relative;
+            z-index: 10;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 28px 120px 28px;
+        }
+
+        /* Top Navigation Header */
+        .pricing-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 56px;
+        }
+
+        @keyframes scpSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .scp-logo-spin {
+            animation: scpSpin 10s linear infinite;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #000000;
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(63, 233, 255, 0.4);
+            padding: 7px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #e4e4e7;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-btn.logout-btn {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .nav-btn.logout-btn:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Hero Header */
+        .pricing-hero {
+            text-align: center;
+            margin-bottom: 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .brutalist-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #3fe9ff;
+            margin-bottom: 22px;
+            box-shadow: 0 0 25px rgba(63, 233, 255, 0.15);
+        }
+
+        .pricing-title {
+            font-size: clamp(36px, 5.5vw, 62px);
+            font-weight: 800;
+            letter-spacing: -1.8px;
+            line-height: 1.1;
+            margin-bottom: 18px;
+            background: linear-gradient(180deg, #ffffff 30%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pricing-subtitle {
+            font-size: 17px;
+            color: #a1a1aa;
+            max-width: 680px;
+            line-height: 1.6;
+            margin-bottom: 38px;
+        }
+
+        /* Period Switcher */
+        .period-switcher-container {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(12, 15, 22, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px;
+            border-radius: 14px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .switch-btn {
+            padding: 10px 28px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #a1a1aa;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .switch-btn.active {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.35);
+        }
+
+        .discount-chip {
+            background: var(--grad-hologram);
+            color: #000000;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* 3 Plans Grid */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-bottom: 72px;
+            align-items: stretch;
+        }
+
+        @media (max-width: 1024px) {
+            .plans-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Neo-Brutalist Chromatic Cards */
+        .plan-card {
+            background: var(--card-glass);
+            border-radius: 24px;
+            padding: 38px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            backdrop-filter: blur(20px);
+            transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Chromatic Border Gradients */
+        .plan-card.tier-starter {
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+        .plan-card.tier-starter:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 35px rgba(56, 189, 248, 0.25);
+            transform: translateY(-6px);
+        }
+
+        .plan-card.tier-business {
+            background: linear-gradient(180deg, rgba(16, 20, 32, 0.92) 0%, rgba(8, 10, 16, 0.96) 100%);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            transform: scale(1.03);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+        }
+
+        .plan-card.tier-business::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 26px;
+            background: var(--grad-hologram);
+            z-index: -1;
+            opacity: 0.9;
+        }
+
+        .plan-card.tier-business:hover {
+            transform: scale(1.03) translateY(-6px);
+            box-shadow: 0 35px 90px rgba(0, 0, 0, 0.95), 0 0 50px rgba(168, 85, 247, 0.35);
+        }
+
+        .plan-card.tier-enterprise {
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+        .plan-card.tier-enterprise:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.25);
+            transform: translateY(-6px);
+        }
+
+        /* Top Corner Crosshair Accents */
+        .corner-cross {
+            position: absolute;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
+            line-height: 1;
+        }
+        .corner-cross.tl { top: 12px; left: 14px; }
+        .corner-cross.tr { top: 12px; right: 14px; }
+
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .popular-floating-tag {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--grad-hologram);
+            color: #000000;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 5px 18px;
+            border-radius: 9999px;
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+            white-space: nowrap;
+        }
+
+        .plan-heading {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.8px;
+        }
+
+        .plan-summary {
+            font-size: 14px;
+            color: #a1a1aa;
+            line-height: 1.5;
+            min-height: 42px;
+            margin-bottom: 28px;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 28px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .price-amount {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .price-cadence {
+            font-size: 14px;
+            color: #a1a1aa;
+            font-weight: 600;
+        }
+
+        .features-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 36px;
+            flex-grow: 1;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #e4e4e7;
+            font-weight: 500;
+        }
+
+        .features-list li .feat-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .feat-icon.cyan { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+        .feat-icon.purple { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+        .feat-icon.amber { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+
+        /* Tactile Neo-Brutalist Buttons */
+        .action-cta-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-cta-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .action-cta-btn:active {
+            transform: translateY(1px);
+        }
+
+        .action-cta-btn.popular-cta {
+            background: var(--grad-hologram);
+            color: #000000;
+            border: none;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+        }
+
+        .action-cta-btn.popular-cta:hover {
+            box-shadow: 0 14px 40px rgba(168, 85, 247, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Interactive Infrastructure Addons */
+        .studio-card-section {
+            background: var(--card-glass);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 38px 34px;
+            margin-bottom: 48px;
+            backdrop-filter: blur(20px);
+        }
+
+        .section-title-row {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .seat-slider-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .slider-header-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #a1a1aa;
+        }
+
+        .seat-highlight-chip {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            color: #3fe9ff;
+            font-size: 16px;
+        }
+
+        .custom-range-slider {
+            width: 100%;
+            accent-color: #3fe9ff;
+            height: 8px;
+            cursor: pointer;
+        }
+
+        .addons-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .addon-item-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .addon-item-box:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(63, 233, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .addon-item-box input[type="checkbox"] {
+            margin-top: 4px;
+            accent-color: #3fe9ff;
+            width: 18px;
+            height: 18px;
+        }
+
+        .addon-main-text {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .addon-sub-text {
+            font-size: 12px;
+            color: #3fe9ff;
+            font-weight: 600;
+        }
+
+        /* Interactive Checkout Modal */
+        .checkout-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(16px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .checkout-modal-overlay.active {
+            display: flex;
+        }
+
+        .checkout-card {
+            background: #0d1017;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 600px;
+            padding: 38px;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.95);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: transparent;
+            border: none;
+            color: #a1a1aa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .close-modal-btn:hover { color: #fff; }
+
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .pay-method-btn {
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .pay-method-btn.active {
+            border-color: #3fe9ff;
+            background: rgba(63, 233, 255, 0.15);
+            color: #3fe9ff;
+            box-shadow: 0 0 15px rgba(63, 233, 255, 0.2);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #a1a1aa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .modern-pay-input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+
+        .modern-pay-input:focus {
+            outline: none;
+            border-color: #3fe9ff;
+            box-shadow: 0 0 20px rgba(63, 233, 255, 0.25);
+        }
+
+        .coupon-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .apply-coupon-btn {
+            padding: 0 22px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .invoice-summary-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .invoice-row {
+            display: flex;
+            justify-content: space-between;
+            color: #a1a1aa;
+        }
+
+        .invoice-row.total {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding-top: 10px;
+            margin-top: 4px;
+        }
+
+        .pay-submit-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            background: var(--grad-hologram);
+            color: #000000;
+            font-weight: 800;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.45);
+            transition: all 0.2s ease;
+        }
+
+        .pay-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 40px rgba(168, 85, 247, 0.65);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .comparison-table th {
+            color: #a1a1aa;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .comparison-table td:nth-child(n+2),
+        .comparison-table th:nth-child(n+2) {
+            text-align: center;
+        }
+
+        .check-yes { color: #3fe9ff; }
+        .check-no { color: #52525b; }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px 0;
+            cursor: pointer;
+        }
+
+        .faq-question {
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            font-size: 14px;
+            color: #a1a1aa;
+            line-height: 1.6;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .faq-item.open .faq-answer { display: block; }
+        .faq-item.open .faq-icon { transform: rotate(180deg); }
+        .faq-icon { transition: transform 0.2s ease; }
+    </style>
+</head>
+<body>
+
+    <!-- WebGL Mesh Drift Background Canvas -->
+    <canvas id="mesh-drift-canvas"></canvas>
+    <div class="gradient-vignette"></div>
+
+    <div class="pricing-page-wrapper">
+        <!-- Top Navigation -->
+        <header class="pricing-nav">
+            <a href="index.html" class="nav-brand" title="SCP Studio">
+                <div class="brand-icon-box"><img src="logo.svg" class="scp-logo-spin" style="width:100%;height:100%;filter:invert(1);" alt="SCP"></div>
+                <span>SCP STUDIO</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-btn"><i class="fa-solid fa-arrow-left"></i> Workspace</a>
+                <a href="profile.html" class="nav-btn"><i class="fa-solid fa-user-gear"></i> Profile & API</a>
+                <button class="nav-btn logout-btn" onclick="handleLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
+            </div>
+        </header>
+
+        <!-- Pricing Hero Header -->
+        <section class="pricing-hero">
+            <div class="brutalist-tag">
+                <i class="fa-solid fa-microchip"></i> [SYS.TPU_CLUSTER_V4] • 0.2s Inference
+            </div>
+            <h1 class="pricing-title">Precision Compute For High-Velocity Design</h1>
+            <p class="pricing-subtitle">
+                Scale from standalone Illustrator-grade vector tracing to real-time 3D motion cards and production API pipelines.
+            </p>
+
+            <!-- Monthly / Yearly Switcher -->
+            <div class="period-switcher-container">
+                <button class="switch-btn active" id="btn-period-monthly">Monthly</button>
+                <button class="switch-btn" id="btn-period-yearly">
+                    Yearly <span class="discount-chip">Save 20%</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 3 Plans Grid -->
+        <section class="plans-grid">
+            <!-- Tier 1: Starter (Cyan/Indigo) -->
+            <div class="plan-card tier-starter">
+                <span class="corner-cross tl">+</span>
+                <span class="corner-cross tr">+</span>
+                <div>
+                    <span class="tier-badge" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">
+                        <i class="fa-solid fa-code-branch"></i> Starter
+                    </span>
+                    <div class="plan-heading">Starter</div>
+                    <div class="plan-summary">Essential high-res vector tracing for solo creators & indie designers.</div>
+                    <div class="price-row">
+                        <span class="price-amount" id="price-starter">$12</span>
+                        <span class="price-cadence" id="period-starter">/ month</span>
+                    </div>
+                    <ul class="features-list">
+                        <li><span class="feat-icon cyan"><i class="fa-solid fa-check"></i></span> 500 High-Res Vector Traces / mo</li>
+                        <li><span class="feat-icon cyan"><i class="fa-solid fa-check"></i></span> 1000% Neural Image Upscaling</li>
+                        <li><span class="feat-icon cyan"><i class="fa-solid fa-check"></i></span> Clean SVG, PDF, EPS & PNG Exports</li>
+                        <li><span class="feat-icon cyan"><i class="fa-solid fa-check"></i></span> Obsidian & Clean Studio Themes</li>
+                        <li><span class="feat-icon cyan"><i class="fa-solid fa-check"></i></span> Standard Inference Queue</li>
+                    </ul>
+                </div>
+                <button class="action-cta-btn" onclick="openCheckout('Starter', 12, 99)">
+                    Get Starter <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Tier 2: Business Pro (Holographic Chromatic) -->
+            <div class="plan-card tier-business">
+                <span class="popular-floating-tag"><i class="fa-solid fa-crown"></i> Most Popular</span>
+                <span class="corner-cross tl">+</span>
+                <span class="corner-cross tr">+</span>
+                <div>
+                    <span class="tier-badge" style="background: rgba(168, 85, 247, 0.18); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4);">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Business Pro
+                    </span>
+                    <div class="plan-heading">Business Pro</div>
+                    <div class="plan-summary">High-throughput GPU studio for design agencies & product teams.</div>
+                    <div class="price-row">
+                        <span class="price-amount" id="price-business" style="background: var(--grad-hologram); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$48</span>
+                        <span class="price-cadence" id="period-business">/ month</span>
+                    </div>
+                    <ul class="features-list">
+                        <li><span class="feat-icon purple"><i class="fa-solid fa-check"></i></span> <b>Unlimited</b> Vector Tracing</li>
+                        <li><span class="feat-icon purple"><i class="fa-solid fa-check"></i></span> Real-Time Aceternity 3D Card Studio</li>
+                        <li><span class="feat-icon purple"><i class="fa-solid fa-check"></i></span> 4K Ultra-Sharp Vector Path Smoothing</li>
+                        <li><span class="feat-icon purple"><i class="fa-solid fa-check"></i></span> Full React TSX Component Generator</li>
+                        <li><span class="feat-icon purple"><i class="fa-solid fa-check"></i></span> Priority GPU Queue (Sub-200ms)</li>
+                        <li><span class="feat-icon purple"><i class="fa-solid fa-check"></i></span> Multi-Layer Color Palettes (64 Colors)</li>
+                    </ul>
+                </div>
+                <button class="action-cta-btn popular-cta" onclick="openCheckout('Business Pro', 48, 399)">
+                    Unlock Business Pro <i class="fa-solid fa-bolt"></i>
+                </button>
+            </div>
+
+            <!-- Tier 3: Enterprise (Amber/Sunset) -->
+            <div class="plan-card tier-enterprise">
+                <span class="corner-cross tl">+</span>
+                <span class="corner-cross tr">+</span>
+                <div>
+                    <span class="tier-badge" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);">
+                        <i class="fa-solid fa-building"></i> Enterprise
+                    </span>
+                    <div class="plan-heading">Enterprise</div>
+                    <div class="plan-summary">Dedicated TPU clusters, unlimited API seats, and custom SLAs.</div>
+                    <div class="price-row">
+                        <span class="price-amount" id="price-enterprise" style="color: #f59e0b;">$96</span>
+                        <span class="price-cadence" id="period-enterprise">/ month</span>
+                    </div>
+                    <ul class="features-list">
+                        <li><span class="feat-icon amber"><i class="fa-solid fa-check"></i></span> Everything in Business Pro</li>
+                        <li><span class="feat-icon amber"><i class="fa-solid fa-check"></i></span> High-Throughput REST & GraphQL API</li>
+                        <li><span class="feat-icon amber"><i class="fa-solid fa-check"></i></span> Dedicated Private Vector TPU Node</li>
+                        <li><span class="feat-icon amber"><i class="fa-solid fa-check"></i></span> Multi-Seat Team Workspaces</li>
+                        <li><span class="feat-icon amber"><i class="fa-solid fa-check"></i></span> 99.99% Uptime SLA & 24/7 Support</li>
+                    </ul>
+                </div>
+                <button class="action-cta-btn" onclick="openCheckout('Enterprise', 96, 899)">
+                    Get Enterprise <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Seat Multiplier & Add-ons Section -->
+        <section class="studio-card-section">
+            <div class="section-title-row">
+                <i class="fa-solid fa-sliders" style="color:#3fe9ff;"></i>
+                <span>Team Seats & Infrastructure Add-ons</span>
+            </div>
+            
+            <div class="seat-slider-box">
+                <div class="slider-header-row">
+                    <span>Workspace Seats Multiplier</span>
+                    <span><span class="seat-highlight-chip" id="seat-count-val">1 Seat</span> ($10/seat/mo volume rate)</span>
+                </div>
+                <input type="range" min="1" max="50" value="1" id="seats-range" class="custom-range-slider">
+            </div>
+
+            <div class="addons-layout">
+                <label class="addon-item-box">
+                    <input type="checkbox" id="addon-gpu" onchange="calculateLiveTotal()">
+                    <div>
+                        <div class="addon-main-text">Dedicated TPU Node (+ $25/mo)</div>
+                        <div class="addon-sub-text">Sub-50ms vector rendering latency</div>
+                    </div>
+                </label>
+                <label class="addon-item-box">
+                    <input type="checkbox" id="addon-sla" onchange="calculateLiveTotal()">
+                    <div>
+                        <div class="addon-main-text">Enterprise 99.99% SLA (+ $40/mo)</div>
+                        <div class="addon-sub-text">Guaranteed uptime with financial backing</div>
+                    </div>
+                </label>
+                <label class="addon-item-box">
+                    <input type="checkbox" id="addon-support" onchange="calculateLiveTotal()">
+                    <div>
+                        <div class="addon-main-text">Dedicated Account Manager (+ $30/mo)</div>
+                        <div class="addon-sub-text">Direct Slack channel & 1h response time</div>
+                    </div>
+                </label>
+            </div>
+        </section>
+
+        <!-- Feature Matrix Table -->
+        <section class="studio-card-section">
+            <div class="section-title-row">
+                <i class="fa-solid fa-table-list" style="color:#a855f7;"></i>
+                <span>Feature Comparison Matrix</span>
+            </div>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Capability</th>
+                        <th>Starter</th>
+                        <th>Business Pro</th>
+                        <th>Enterprise</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Vector Trace Volume</td>
+                        <td>500 / mo</td>
+                        <td>Unlimited</td>
+                        <td>Unlimited + API</td>
+                    </tr>
+                    <tr>
+                        <td>1000% AI Upscaling</td>
+                        <td><i class="fa-solid fa-check check-yes"></i></td>
+                        <td><i class="fa-solid fa-check check-yes"></i></td>
+                        <td><i class="fa-solid fa-check check-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Aceternity 3D Card Studio</td>
+                        <td><i class="fa-solid fa-xmark check-no"></i></td>
+                        <td><i class="fa-solid fa-check check-yes"></i></td>
+                        <td><i class="fa-solid fa-check check-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td>React TSX Code Generation</td>
+                        <td><i class="fa-solid fa-xmark check-no"></i></td>
+                        <td><i class="fa-solid fa-check check-yes"></i></td>
+                        <td><i class="fa-solid fa-check check-yes"></i></td>
+                    </tr>
+                    <tr>
+                        <td>High-Throughput API Key</td>
+                        <td><i class="fa-solid fa-xmark check-no"></i></td>
+                        <td><i class="fa-solid fa-xmark check-no"></i></td>
+                        <td><i class="fa-solid fa-check check-yes"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="studio-card-section">
+            <div class="section-title-row">
+                <i class="fa-solid fa-circle-question" style="color:#f59e0b;"></i>
+                <span>Frequently Asked Questions</span>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span>Can I cancel or switch plans at any time?</span>
+                    <i class="fa-solid fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    Yes, you can upgrade, downgrade, or cancel your subscription at any time with a single click in your profile settings. Upgrades apply immediately.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span>What export formats are supported?</span>
+                    <i class="fa-solid fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    We support SVG, PDF, EPS, PNG, Animated GIF, and clean React TSX components for both standard vectors and 3D perspective cards.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    <span>Is there a free trial or money-back guarantee?</span>
+                    <i class="fa-solid fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    All plans come with a 30-day risk-free money-back guarantee. If you are not 100% satisfied with the vector quality, contact support for a full refund.
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Interactive Checkout Modal -->
+    <div class="checkout-modal-overlay" id="checkout-modal">
+        <div class="checkout-card">
+            <button class="close-modal-btn" onclick="closeCheckout()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 6px;">Secure Checkout</h3>
+            <p style="font-size: 14px; color: #a1a1aa; margin-bottom: 24px;">Upgrading to <b id="checkout-plan-name" style="color:#3fe9ff;">Business Pro</b></p>
+
+            <div class="payment-methods-grid">
+                <button class="pay-method-btn active" onclick="selectPayMethod(this)"><i class="fa-solid fa-credit-card"></i> Card</button>
+                <button class="pay-method-btn" onclick="selectPayMethod(this)"><i class="fa-brands fa-apple"></i> Apple</button>
+                <button class="pay-method-btn" onclick="selectPayMethod(this)"><i class="fa-brands fa-google"></i> Google</button>
+                <button class="pay-method-btn" onclick="selectPayMethod(this)"><i class="fa-brands fa-bitcoin"></i> Crypto</button>
+            </div>
+
+            <div class="input-group">
+                <label>Cardholder Name</label>
+                <input type="text" class="modern-pay-input" placeholder="Satoshi Nakamoto" id="card-name" value="Demo Designer">
+            </div>
+
+            <div class="input-group">
+                <label>Card Number</label>
+                <input type="text" class="modern-pay-input" placeholder="4242 •••• •••• 4242" id="card-number" value="4242 4242 4242 4242" maxlength="19">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="input-group">
+                    <label>Expires</label>
+                    <input type="text" class="modern-pay-input" placeholder="MM/YY" value="12/28" maxlength="5">
+                </div>
+                <div class="input-group">
+                    <label>CVC</label>
+                    <input type="text" class="modern-pay-input" placeholder="CVC" value="888" maxlength="4">
+                </div>
+            </div>
+
+            <div class="coupon-row">
+                <input type="text" class="modern-pay-input" placeholder="Promo Code (e.g. PRO20)" id="coupon-code" style="text-transform:uppercase;">
+                <button class="apply-coupon-btn" onclick="applyCoupon()">Apply</button>
+            </div>
+
+            <div class="invoice-summary-box">
+                <div class="invoice-row">
+                    <span>Base Subscription</span>
+                    <span id="inv-base-price">$48.00</span>
+                </div>
+                <div class="invoice-row">
+                    <span>Team Seats</span>
+                    <span id="inv-seats-price">$0.00</span>
+                </div>
+                <div class="invoice-row">
+                    <span>Add-ons</span>
+                    <span id="inv-addons-price">$0.00</span>
+                </div>
+                <div class="invoice-row" id="inv-discount-row" style="display: none; color: #3fe9ff;">
+                    <span>Discount (<span id="discount-pct">20%</span>)</span>
+                    <span id="inv-discount-price">-$9.60</span>
+                </div>
+                <div class="invoice-row total">
+                    <span>Total Due Today</span>
+                    <span id="inv-total-price" style="color:#3fe9ff;">$48.00</span>
+                </div>
+            </div>
+
+            <button class="pay-submit-btn" onclick="confirmPayment()">
+                <i class="fa-solid fa-lock"></i> Authorize & Upgrade
+            </button>
+        </div>
+    </div>
+
+    <!-- Script Logic & Mesh Drift WebGL Engine -->
+    <script>
+        let isYearly = false;
+        let activePlan = 'Business Pro';
+        let baseMonthlyPrice = 48;
+        let baseYearlyPrice = 399;
+        let discountMultiplier = 1.0;
+
+        const btnMonthly = document.getElementById('btn-period-monthly');
+        const btnYearly = document.getElementById('btn-period-yearly');
+
+        btnMonthly.addEventListener('click', () => {
+            isYearly = false;
+            btnMonthly.classList.add('active');
+            btnYearly.classList.remove('active');
+            updatePriceDisplays();
+        });
+
+        btnYearly.addEventListener('click', () => {
+            isYearly = true;
+            btnYearly.classList.add('active');
+            btnMonthly.classList.remove('active');
+            updatePriceDisplays();
+        });
+
+        function updatePriceDisplays() {
+            document.getElementById('price-starter').innerText = isYearly ? '$99' : '$12';
+            document.getElementById('period-starter').innerText = isYearly ? '/ year' : '/ month';
+
+            document.getElementById('price-business').innerText = isYearly ? '$399' : '$48';
+            document.getElementById('period-business').innerText = isYearly ? '/ year' : '/ month';
+
+            document.getElementById('price-enterprise').innerText = isYearly ? '$899' : '$96';
+            document.getElementById('period-enterprise').innerText = isYearly ? '/ year' : '/ month';
+
+            calculateLiveTotal();
+        }
+
+        const seatsRange = document.getElementById('seats-range');
+        const seatCountVal = document.getElementById('seat-count-val');
+        seatsRange.addEventListener('input', () => {
+            const seats = parseInt(seatsRange.value);
+            seatCountVal.innerText = `${seats} ${seats > 1 ? 'Seats' : 'Seat'}`;
+            calculateLiveTotal();
+        });
+
+        function openCheckout(planName, monthly, yearly) {
+            activePlan = planName;
+            baseMonthlyPrice = monthly;
+            baseYearlyPrice = yearly;
+            document.getElementById('checkout-plan-name').innerText = `${planName} (${isYearly ? 'Yearly' : 'Monthly'})`;
+            calculateLiveTotal();
+            document.getElementById('checkout-modal').classList.add('active');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').classList.remove('active');
+        }
+
+        function selectPayMethod(btn) {
+            document.querySelectorAll('.pay-method-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function applyCoupon() {
+            const code = (document.getElementById('coupon-code').value || '').trim().toUpperCase();
+            if (code === 'PRO20' || code === 'LAUNCH20') {
+                discountMultiplier = 0.8;
+                document.getElementById('discount-pct').innerText = '20%';
+                document.getElementById('inv-discount-row').style.display = 'flex';
+                alert('Promo code applied: 20% OFF!');
+            } else if (code === 'STUDENT50') {
+                discountMultiplier = 0.5;
+                document.getElementById('discount-pct').innerText = '50%';
+                document.getElementById('inv-discount-row').style.display = 'flex';
+                alert('Student promo applied: 50% OFF!');
+            } else {
+                alert('Invalid promo code. Try "PRO20" for 20% off!');
+            }
+            calculateLiveTotal();
+        }
+
+        function calculateLiveTotal() {
+            const base = isYearly ? baseYearlyPrice : baseMonthlyPrice;
+            const seats = parseInt(seatsRange.value);
+            const seatCost = (seats - 1) * (isYearly ? 90 : 10);
+
+            let addons = 0;
+            if (document.getElementById('addon-gpu')?.checked) addons += (isYearly ? 250 : 25);
+            if (document.getElementById('addon-sla')?.checked) addons += (isYearly ? 400 : 40);
+            if (document.getElementById('addon-support')?.checked) addons += (isYearly ? 300 : 30);
+
+            const subtotal = base + seatCost + addons;
+            const total = subtotal * discountMultiplier;
+            const discountAmt = subtotal - total;
+
+            document.getElementById('inv-base-price').innerText = `$${base.toFixed(2)}`;
+            document.getElementById('inv-seats-price').innerText = `$${seatCost.toFixed(2)}`;
+            document.getElementById('inv-addons-price').innerText = `$${addons.toFixed(2)}`;
+
+            if (discountMultiplier < 1.0) {
+                document.getElementById('inv-discount-price').innerText = `-$${discountAmt.toFixed(2)}`;
+            }
+
+            document.getElementById('inv-total-price').innerText = `$${total.toFixed(2)}`;
+        }
+
+        function confirmPayment() {
+            let userStr = localStorage.getItem('vectorizerUser');
+            let user = userStr ? JSON.parse(userStr) : { email: 'designer@studio.com', name: 'Pro Designer', credits: 100 };
+            user.plan = activePlan;
+            user.isYearly = isYearly;
+            user.credits = (user.credits || 0) + (activePlan.includes('Enterprise') ? 99999 : 5000);
+            localStorage.setItem('vectorizerUser', JSON.stringify(user));
+
+            alert(`🎉 Payment Authorized! You are now upgraded to ${activePlan} plan. Credits updated!`);
+            closeCheckout();
+            window.location.href = 'index.html';
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('vectorizerUser');
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        function toggleFaq(el) {
+            el.classList.toggle('open');
+        }
+
+        // Mesh Drift Shader (kk.tsx Implementation)
+        (function initMeshDrift() {
+            const canvas = document.getElementById('mesh-drift-canvas');
+            if (!canvas) return;
+            const gl = canvas.getContext('webgl', { alpha: false, antialias: false });
+            if (!gl) return;
+
+            const VERT = `attribute vec2 a_position; void main() { gl_Position = vec4(a_position, 0.0, 1.0); }`;
+            const FRAG = `
+                precision highp float;
+                uniform vec3 u_colors[8];
+                uniform vec4 u_scene;
+                uniform vec4 u_shape;
+                uniform vec4 u_surface;
+                uniform vec4 u_finish;
+                uniform vec4 u_transform;
+                uniform vec4 u_space;
+                uniform vec4 u_cursor;
+
+                #define u_resolution u_scene.xy
+                #define u_time u_scene.z
+                #define u_colorCount u_scene.w
+                #define u_scale u_shape.x
+                #define u_intensity u_shape.y
+                #define u_paramA u_shape.z
+                #define u_warp u_shape.w
+                #define u_detail u_surface.x
+                #define u_contrast u_surface.y
+                #define u_brightness u_surface.z
+                #define u_saturation u_surface.w
+                #define u_hue u_finish.x
+                #define u_vignette u_finish.y
+                #define u_blur u_finish.z
+                #define u_grain u_finish.w
+                #define u_seed u_transform.x
+                #define u_rotate u_transform.y
+                #define u_drift u_transform.z
+                #define u_oklab u_transform.w
+                #define u_offset u_space.xy
+                #define u_mouse u_space.zw
+
+                float hash21(vec2 p) {
+                    p = fract(p * vec2(234.34, 435.345));
+                    p += dot(p, p + 34.23);
+                    return fract(p.x * p.y);
+                }
+
+                float noise(vec2 p) {
+                    vec2 i = floor(p);
+                    vec2 f = fract(p);
+                    vec2 u = f * f * (3.0 - 2.0 * f);
+                    return mix(
+                        mix(hash21(i), hash21(i + vec2(1.0, 0.0)), u.x),
+                        mix(hash21(i + vec2(0.0, 1.0)), hash21(i + vec2(1.0, 1.0)), u.x),
+                        u.y);
+                }
+
+                float fbm(vec2 p) {
+                    float v = 0.0;
+                    float a = 0.5;
+                    for (int i = 0; i < 5; i++) {
+                        v += a * noise(p);
+                        p = p * 2.03 + vec2(17.0, 9.2);
+                        a *= 0.5;
+                    }
+                    return v;
+                }
+
+                vec3 shade(vec2 uv, vec2 p, float t) {
+                    vec3 acc = u_colors[0] * 0.15;
+                    float total = 0.15;
+                    for (int i = 0; i < 8; i++) {
+                        if (float(i) >= u_colorCount) break;
+                        float fi = float(i);
+                        vec2 c = vec2(
+                            sin(t * (0.21 + fi * 0.071) + fi * 2.4 + u_seed),
+                            cos(t * (0.17 + fi * 0.093) + fi * 1.7)) * (0.45 + u_intensity * 0.35);
+                        float w = exp(-dot(p - c, p - c) * 6.0);
+                        acc += u_colors[i] * w;
+                        total += w;
+                    }
+                    return acc / total;
+                }
+
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                    vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+                    p *= u_scale;
+                    p += u_offset;
+                    p += u_drift * vec2(sin(u_time * 0.31), cos(u_time * 0.23));
+                    if (u_warp > 0.0) {
+                        p += u_warp * (vec2(fbm(p * u_detail + u_seed), fbm(p * u_detail + vec2(5.2, 1.3))) - 0.5);
+                    }
+                    vec3 col = shade(uv, p, u_time);
+                    if (abs(u_contrast - 1.0) > 0.0001) col = (col - 0.5) * u_contrast + 0.5;
+                    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+                }
+            `;
+
+            function compile(src, type) {
+                const s = gl.createShader(type);
+                gl.shaderSource(s, src);
+                gl.compileShader(s);
+                return s;
+            }
+
+            const prog = gl.createProgram();
+            gl.attachShader(prog, compile(VERT, gl.VERTEX_SHADER));
+            gl.attachShader(prog, compile(FRAG, gl.FRAGMENT_SHADER));
+            gl.linkProgram(prog);
+            gl.useProgram(prog);
+
+            const buf = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+
+            const loc = gl.getAttribLocation(prog, "a_position");
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+            const uni = {
+                colors: gl.getUniformLocation(prog, "u_colors"),
+                scene: gl.getUniformLocation(prog, "u_scene"),
+                shape: gl.getUniformLocation(prog, "u_shape"),
+                surface: gl.getUniformLocation(prog, "u_surface"),
+                finish: gl.getUniformLocation(prog, "u_finish"),
+                transform: gl.getUniformLocation(prog, "u_transform"),
+                space: gl.getUniformLocation(prog, "u_space"),
+                cursor: gl.getUniformLocation(prog, "u_cursor")
+            };
+
+            const colors = [
+                0.012, 0.110, 0.149,
+                0.106, 0.424, 0.659,
+                0.353, 0.824, 0.957,
+                0.918, 0.976, 1.0,
+                0.918, 0.976, 1.0,
+                0.918, 0.976, 1.0,
+                0.918, 0.976, 1.0,
+                0.918, 0.976, 1.0
+            ];
+            gl.uniform3fv(uni.colors, new Float32Array(colors));
+            gl.uniform4f(uni.shape, 1.300, 0.560, 0.670, 0.192);
+            gl.uniform4f(uni.surface, 2.016, 1.167, 0.000, 1.000);
+            gl.uniform4f(uni.finish, 0.0000, 0.150, 0.0072, 0.098);
+            gl.uniform4f(uni.transform, 5069.0, 2.7227, 0.148, 0.0);
+            gl.uniform4f(uni.cursor, 0, 2.0, 0.730, 0.365);
+
+            function resize() {
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                canvas.width = window.innerWidth * dpr;
+                canvas.height = window.innerHeight * dpr;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const start = performance.now();
+            function render(now) {
+                gl.uniform4f(uni.scene, canvas.width, canvas.height, ((now - start) / 1000) * -1.373, 4);
+                gl.uniform4f(uni.space, 0.090, 0.150, 0, 0);
+                gl.drawArrays(gl.TRIANGLES, 0, 3);
+                requestAnimationFrame(render);
+            }
+            requestAnimationFrame(render);
+        })();
+
+        async function handleLogout() {
+            if (window.FirebaseService) {
+                await window.FirebaseService.logoutUser();
+            } else {
+                localStorage.removeItem('vectorizerUser');
+                sessionStorage.clear();
+            }
+            window.location.href = 'login.html';
+        }
+    </script>
+    <script type="module" src="firebase-service.js"></script>
+</body>
+</html>

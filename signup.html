@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - SCP Studio</title>
+    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-container">
+    <div class="auth-card">
+        <h2><i class="fa-solid fa-bolt" style="color: #ff9a00;"></i> Create Account</h2>
+        <form class="auth-form" id="signupForm">
+            <div>
+                <label for="name">Full Name</label>
+                <input type="text" id="name" required style="width: 100%; box-sizing: border-box;">
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" required style="width: 100%; box-sizing: border-box;">
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" required minlength="6" style="width: 100%; box-sizing: border-box;">
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <div style="margin: 15px 0; display: flex; align-items: center; text-align: center; color: #666;">
+            <div style="flex: 1; border-bottom: 1px solid #444;"></div>
+            <span style="padding: 0 10px; font-size: 12px; color: #a0a0a0;">OR</span>
+            <div style="flex: 1; border-bottom: 1px solid #444;"></div>
+        </div>
+        
+        <button id="googleLogin" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #1e1e1e; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+            <i class="fa-brands fa-google" style="color: #DB4437; margin-right: 10px;"></i> Sign in with Google
+        </button>
+
+        <div class="auth-links">
+            <p>Already have an account? <a href="login.html">Log in</a></p>
+            <p><a href="index.html">Return to Editor</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            
+            if (email && pass && name) {
+                const user = { name: name, email: email, credits: 50, plan: 'Free' };
+                localStorage.setItem('vectorizerUser', JSON.stringify(user));
+                window.location.href = 'index.html';
+            }
+        });
+
+        document.getElementById('googleLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            // Prompt for a mock gmail account for testing
+            const gmail = prompt("Simulating Google Sign Up. Enter your Gmail address:", "test@gmail.com");
+            if (gmail && gmail.includes('@')) {
+                const user = { name: gmail.split('@')[0], email: gmail, credits: 50, plan: 'Free' };
+                localStorage.setItem('vectorizerUser', JSON.stringify(user));
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
